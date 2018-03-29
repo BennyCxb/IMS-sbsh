@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="选择位置" :visible.sync="mapShow" :before-close="handleClose" width="80%">
+  <el-dialog title="选择位置" :visible.sync="mapShow" :before-close="handleClose" width="60%" append-to-body>
     <div class="amap-page-container">
       <el-amap-search-box class="search-box" :search-option="searchOption"
                           :on-search-result="onSearchResult"></el-amap-search-box>
@@ -24,26 +24,6 @@
       </span>
   </el-dialog>
 </template>
-
-<style>
-  #amapDemo, .amap-demo {
-    height: 300px;
-  }
-
-  .search-box {
-    position: absolute !important;
-    top: 25px;
-    left: 20px;
-  }
-
-  .amap-page-container {
-    position: relative;
-  }
-
-  .toolbar {
-    margin-top: 10px;
-  }
-</style>
 
 <script>
 export default {
@@ -171,5 +151,21 @@ export default {
 </script>
 
 <style scoped>
+  #amapDemo, .amap-demo {
+    height: 300px;
+  }
 
+  .search-box {
+    position: absolute !important;
+    top: 25px;
+    left: 20px;
+  }
+
+  .amap-page-container {
+    position: relative;
+  }
+
+  .toolbar {
+    margin-top: 10px;
+  }
 </style>

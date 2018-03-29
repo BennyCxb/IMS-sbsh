@@ -57,10 +57,11 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="定位信息" :label-width="formLabelWidth">
+          <el-form-item label="定位信息" :label-width="formLabelWidth" prop="position">
             <el-input v-model="form.position" @focus="openMap"
                       placeholder="点击选择定位"></el-input>
           </el-form-item>
+          <mapSelect :mapShow="mapSelectShow" @selectMap="closeMap" @selectPosition="setPosition"></mapSelect>
         </el-col>
         <el-col :span="12">
           <el-form-item label="问题类型" :label-width="formLabelWidth" prop="proType">
@@ -74,15 +75,10 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <!--<el-col :span="12">-->
-        <!--<el-form-item label="整治时限" :label-width="formLabelWidth" prop="duration">-->
-        <!--<el-input v-model="form.duration" auto-complete="off" placeholder="请输入整治时限"></el-input>-->
-        <!--</el-form-item>-->
-        <!--</el-col>-->
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="问题描述" :label-width="formLabelWidth">
+          <el-form-item label="问题描述" :label-width="formLabelWidth" prop="proType">
             <el-input v-model="form.proDescribe"
                       type="textarea"
                       :rows="2"
@@ -92,7 +88,7 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="备注" :label-width="formLabelWidth">
+          <el-form-item label="备注" :label-width="formLabelWidth" prop="remarks">
             <el-input v-model="form.remarks"
                       type="textarea"
                       :rows="2"
@@ -109,13 +105,14 @@
             <el-upload
               ref="upload"
               :action="url"
-              :headers="files.headers"
+              :headers="headers"
               :auto-upload="false"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
               :data="files.data"
               :accept="files.accept1"
-              :on-success="uploadSuccess">
+              :on-success="uploadSuccess"
+              multiple>
               <i class="el-icon-plus"></i>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible"
@@ -134,13 +131,22 @@
 </template>
 
 <script>
+import mapSelect from './MapSelect.vue'
 import {formatDate} from '../../assets/js/date.js'
 import _ from 'lodash'
 
 export default {
+  components: {
+    mapSelect
+  },
   computed: {
     url () {
       return this.$axios.defaults.baseURL + 'Files/UploadFileForQiNiu'
+    },
+    headers () {
+      return {
+        Authorization: 'Bearer ' + this.$cookies.get('TZManage')
+      }
     }
   },
   data () {
@@ -148,6 +154,7 @@ export default {
       title: '新增问题',
       append: true,
       innerVisible: false,
+      mapSelectShow: false,
       form: {
         isSubmited: false,
         fid: this.fid,
@@ -168,14 +175,7 @@ export default {
       },
       files: {
         accept1: 'image/*',
-        headers: {
-          Authorization: this.getHearder()
-        },
-        data: {
-          AttachType: 'image/*',
-          FBillTypeID: Number(this.billTypeId),
-          FLoanID: 0
-        }
+        data: {}
       },
       formLabelWidth: '120px',
       adcdOptions: [],
@@ -233,7 +233,17 @@ export default {
       return 'Bearer ' + this.$cookies.get('TZManage')
     },
     openMap () {
-      this.$emit('selectMap', true)
+      // this.$emit('selectMap', true)
+      this.mapSelectShow = true
+    },
+    /**
+     * 关闭地图
+     */
+    closeMap (msg) {
+      this.mapSelectShow = msg
+    },
+    setPosition (msg) {
+      this.form.position = msg.lng + ',' + msg.lat
     },
     getAdcd () {
       let self = this
@@ -316,6 +326,7 @@ export default {
       Object.assign(this.$data.form, this.$options.data().files)
       if (this.fid !== '') {
         this.title = '编辑问题'
+        this.getFilesUrl()
         this.$axios.get('LoanApply/GetApplyInfo', {
           params: {
             FID: this.fid
@@ -329,7 +340,7 @@ export default {
                 fid: obj.FID,
                 billTypeId: obj.FBillTypeID,
                 billNo: obj.FBillNo,
-                adcd: obj.FAgencyValue,
+                adcd: Number(obj.FAgencyValue),
                 edge: obj.FPerimeter,
                 town: obj.FTwon,
                 year: obj.FYear,
@@ -350,7 +361,7 @@ export default {
           })
           .catch(error => {
             console.log(error)
-            this.$message.error(error.message)
+            self.$message.error(error.message)
           })
       } else {
         this.title = '新增问题'
@@ -392,7 +403,11 @@ export default {
               .then(response => {
                 let data = response.data
                 if (data.code === 1) {
-                  self.files.FLoanID = data.object
+                  self.files.data = {
+                    AttachType: 'image/*',
+                    FBillTypeID: Number(this.billTypeId),
+                    FLoanID: data.object
+                  }
                   self.form.isSubmited = true
                   if (self.form.fid === '' || undefined) {
                     self.submitUpload()
@@ -405,7 +420,7 @@ export default {
                   // })
                   // this.$emit('closeProAdd', false)
                 } else {
-                  this.$message({
+                  self.$message({
                     message: data.message,
                     type: 'warning'
                   })
@@ -460,8 +475,8 @@ export default {
       var self = this
       this.$axios.get('Files/GetFilesUrl', {
         params: {
-          FLoanID: self.files.FLoanID,
-          FBillTypeID: self.form.billTypeId,
+          FLoanID: self.fid,
+          FBillTypeID: self.billTypeId,
           FAttachType: self.files.accept1
         }
       })
@@ -479,7 +494,7 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          this.$message.error(error.message)
+          self.$message.error(error.message)
         })
     },
     submitUpload () {

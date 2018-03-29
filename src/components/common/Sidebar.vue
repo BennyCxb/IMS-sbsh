@@ -4,7 +4,7 @@
              unique-opened
              background-color="#545c64"
              text-color="#fff"
-             active-text-color="#ffd04b">
+             active-text-color="#409EFF">
       <!--一级菜单-->
       <template v-for="(item, i) in items">
         <template v-if="item.subs">
@@ -18,7 +18,8 @@
             <template v-for="(subItem,i) in item.subs">
               <template v-if="subItem.subs">
                 <el-submenu :key="i"
-                            :index="subItem.index">
+                            :index="subItem.index"
+                            background-color="#000">
                   <template slot="title">
                     <i :class="item.icon"></i>
                     <span>{{ subItem.title }}</span>

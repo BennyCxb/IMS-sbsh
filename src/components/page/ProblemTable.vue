@@ -59,9 +59,9 @@
       <!--<router-link :to="'ProblemAdd'">-->
       <!--<el-button type="primary" icon="upload2">上报问题</el-button>-->
       <!--</router-link>-->
-      <vProblemForm :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow" :sposition="position"
-                    @closeProAdd="closePro" @selectMap="closeMap"></vProblemForm>
-      <map-select :mapShow="mapSelectShow" @selectMap="closeMap" @selectPosition="setPosition"></map-select>
+      <vProblemForm :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow"
+                    @closeProAdd="closePro"></vProblemForm>
+      <!--<map-select :mapShow="mapSelectShow" @selectMap="closeMap" @selectPosition="setPosition"></map-select>-->
 
       <!--<el-button type="primary" icon="" @click="search">整改完成</el-button>-->
     </div>
@@ -105,18 +105,16 @@
 <script>
 import _ from 'lodash'
 import vProblemForm from './ProblemForm.vue'
-import mapSelect from './MapSelect.vue'
+// import mapSelect from './MapSelect.vue'
 
 export default {
   components: {
-    vProblemForm,
-    mapSelect
+    vProblemForm
   },
   data () {
     return {
       editFid: '',
       billTypeID: '',
-      position: '',
       tableData: [],
       cur_page: 1,
       multipleSelection: [],
@@ -131,15 +129,12 @@ export default {
       select_cttatus: '',
       del_list: [],
       is_search: false,
-      years: [2018, 2017, 2016],
-      mouths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       adlist: [],
       proOptions: [],
       edgeOptions: [],
       staOptions: [],
       cstaOptions: [],
       proAddShow: false,
-      mapSelectShow: false,
       breadcrumb: []
     }
   },
@@ -346,10 +341,6 @@ export default {
     formatter (row, column) {
       return row.address
     },
-    // filterTag(value, row) {
-    //     return row.tag === value
-    // },
-
     /**
      * 修改信息触发
      */
@@ -382,17 +373,6 @@ export default {
         .catch(_ => {
         })
     },
-    // delAll(){
-    //     const self = this,
-    //         length = self.multipleSelection.length
-    //     let str = ''
-    //     self.del_list = self.del_list.concat(self.multipleSelection)
-    //     for (let i = 0 i < length i++) {
-    //         str += self.multipleSelection[i].name + ' '
-    //     }
-    //     self.$message.error('删除了'+str)
-    //     self.multipleSelection = []
-    // },
     handleSelectionChange (val) {
       this.multipleSelection = val
     },
@@ -416,22 +396,7 @@ export default {
     closePro: function (msg) {
       this.proAddShow = msg
       this.getData()
-    },
-    /**
-     * 关闭地图选择框
-     */
-    closeMap: function (msg) {
-      this.mapSelectShow = msg
-    },
-    /**
-     * 设置定位信息
-     */
-    setPosition (msg) {
-      this.position = msg.lng + ',' + msg.lat
     }
-  },
-  mounted () {
-
   },
   watch: {
     '$route' (to, from) {
