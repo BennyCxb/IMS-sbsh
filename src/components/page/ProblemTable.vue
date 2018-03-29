@@ -52,10 +52,10 @@
     </div>
     <div class="handle-box">
       <el-input v-model="select_problem_num" placeholder="问题编号" class="handle-input mr10"></el-input>
-      <el-button type="primary" icon="search" @click="search">搜索</el-button>
+      <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
       <!--<el-button type="primary" icon="plus" @click="search">添加项目</el-button>-->
       <!--<el-button type="primary" icon="printer" @click="search">数据导出</el-button>-->
-      <el-button type="primary" icon="plus" @click="addProblem">新增问题</el-button>
+      <el-button type="primary" icon="el-icon-plus" @click="addProblem">新增问题</el-button>
       <!--<router-link :to="'ProblemAdd'">-->
       <!--<el-button type="primary" icon="upload2">上报问题</el-button>-->
       <!--</router-link>-->
@@ -78,10 +78,10 @@
       </el-table-column>
       <el-table-column prop="FProbType" label="问题类型">
       </el-table-column>
-      <el-table-column prop="FStatusName" label="审核状态" sortable>
+      <el-table-column prop="FStatusName" label="审核状态">
       </el-table-column>
-      <el-table-column label="操作" width="200">
-        <template scope="scope">
+      <el-table-column label="操作" width="250">
+        <template slot-scope="scope">
           <el-button size="small"
                      @click="handleEdit(scope.$index, scope.row)">编辑
           </el-button>

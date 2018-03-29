@@ -1,11 +1,11 @@
 <template>
   <div class="header">
-    <div class="logo">四边三化信息管理系统</div>
+    <div class="logo">后台管理系统</div>
     <div class="user-info">
       <el-dropdown trigger="click" @command="handleCommand">
                 <span class="el-dropdown-link">
                     <img class="user-logo" src="../../../static/img/img.jpg">
-                    {{username}}
+                    {{name}}
                 </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="loginout">退出</el-dropdown-item>
@@ -18,22 +18,42 @@
 export default {
   data () {
     return {
-      name: 'linxin'
+      name: ''
     }
   },
-  computed: {
-    username () {
-      let username = localStorage.getItem('ms_username')
-      return username ? username : this.name
-    }
-  },
+  // computed: {
+  //   username () {
+  //     let username = localStorage.getItem('ms_username')
+  //     return username ? username : this.name
+  //   }
+  // },
   methods: {
     handleCommand (command) {
       if (command === 'loginout') {
         localStorage.removeItem('ms_username')
         this.$router.push('/login')
       }
+    },
+    getUsername () {
+      var self = this
+      this.$axios.get('Login/IsLogin')
+        .then(function (response) {
+          let data = response.data
+          console.log(data)
+          if (data.code === 1) {
+            self.name = data.object.UserName
+          } else {
+            self.$message.error(data.message)
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+          self.$message.error(error.message)
+        })
     }
+  },
+  created () {
+    this.getUsername()
   }
 }
 </script>
