@@ -11,18 +11,6 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="四边" :label-width="formLabelWidth" prop="edge">
-            <el-select v-model="form.edge">
-              <el-option
-                v-for="(item,i) in edgeOptions"
-                :key="i"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
@@ -45,7 +33,7 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="线路名称" :label-width="formLabelWidth" prop="lineName">
+          <el-form-item label="项目名称" :label-width="formLabelWidth" prop="lineName">
             <el-input v-model="form.lineName" placeholder="请输入线路名称"></el-input>
           </el-form-item>
         </el-col>
@@ -63,22 +51,10 @@
           </el-form-item>
           <mapSelect :mapShow="mapSelectShow" @selectMap="closeMap" @selectPosition="setPosition"></mapSelect>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="问题类型" :label-width="formLabelWidth" prop="proType">
-            <el-select v-model="form.proType" placeholder="请选择问题类型">
-              <el-option
-                v-for="(item, i) in proOptions"
-                :key="i"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="问题描述" :label-width="formLabelWidth" prop="proType">
+          <el-form-item label="项目简介" :label-width="formLabelWidth" prop="proType">
             <el-input v-model="form.proDescribe"
                       type="textarea"
                       :rows="2"
@@ -96,19 +72,21 @@
           </el-form-item>
         </el-col>
       </el-row>
+    </el-form>
+
+    <el-form :model="files" ref="probForm2" class="demo-form-inline demo-ruleForm">
       <el-row>
         <el-col :span="24">
-          <el-form-item label="整改前照片" :label-width="formLabelWidth">
+          <el-form-item label="利用前照片" :label-width="formLabelWidth">
             <el-upload
-              ref="upload1"
+              ref="upload"
               :action="url"
               :headers="headers"
               :auto-upload="false"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
-              :data="files1.data"
-              :file-list="files1.fileList"
-              accept="image/*"
+              :data="files.data"
+              :accept="files.accept1"
               :on-success="uploadSuccess"
               multiple>
               <i class="el-icon-plus"></i>
@@ -122,17 +100,62 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="整改后照片" :label-width="formLabelWidth">
+          <el-form-item label="规划设计效果图" :label-width="formLabelWidth">
             <el-upload
-              ref="upload2"
+              ref="upload"
               :action="url"
               :headers="headers"
               :auto-upload="false"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
-              :data="files2.data"
-              :file-list="files2.fileList"
-              accept="image/*"
+              :data="files.data"
+              :accept="files.accept1"
+              :on-success="uploadSuccess"
+              multiple>
+              <i class="el-icon-plus"></i>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible"
+                       append-to-body>
+              <img width="100%" :src="dialogImageUrl" alt="">
+            </el-dialog>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="利用中照片" :label-width="formLabelWidth">
+            <el-upload
+              ref="upload"
+              :action="url"
+              :headers="headers"
+              :auto-upload="false"
+              list-type="picture-card"
+              :on-preview="handlePictureCardPreview"
+              :data="files.data"
+              :accept="files.accept1"
+              :on-success="uploadSuccess"
+              multiple>
+              <i class="el-icon-plus"></i>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible"
+                       append-to-body>
+              <img width="100%" :src="dialogImageUrl" alt="">
+            </el-dialog>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="利用后照片" :label-width="formLabelWidth">
+            <el-upload
+              ref="upload"
+              :action="url"
+              :headers="headers"
+              :auto-upload="false"
+              list-type="picture-card"
+              :on-preview="handlePictureCardPreview"
+              :data="files.data"
+              :accept="files.accept1"
               :on-success="uploadSuccess"
               multiple>
               <i class="el-icon-plus"></i>
@@ -173,7 +196,7 @@ export default {
   },
   data () {
     return {
-      title: '新增问题',
+      title: '新增项目',
       append: true,
       innerVisible: false,
       mapSelectShow: false,
@@ -195,13 +218,9 @@ export default {
         proDescribe: '',
         remarks: ''
       },
-      files1: {
-        data: {},
-        fileList: []
-      },
-      files2: {
-        data: {},
-        fileList: []
+      files: {
+        accept1: 'image/*',
+        data: {}
       },
       formLabelWidth: '120px',
       adcdOptions: [],
@@ -351,7 +370,7 @@ export default {
       Object.assign(this.$data.form, this.$options.data().form)
       Object.assign(this.$data.form, this.$options.data().files)
       if (this.fid !== '') {
-        this.title = '编辑问题'
+        this.title = '编辑项目'
         this.getFilesUrl()
         this.$axios.get('LoanApply/GetApplyInfo', {
           params: {
@@ -363,7 +382,6 @@ export default {
             if (data.code === 1) {
               var obj = data.object
               self.form = {
-                isSubmited: false,
                 fid: obj.FID,
                 billTypeId: obj.FBillTypeID,
                 billNo: obj.FBillNo,
@@ -391,7 +409,7 @@ export default {
             self.$message.error(error.message)
           })
       } else {
-        this.title = '新增问题'
+        this.title = '新增项目'
       }
     },
     /**
@@ -409,7 +427,7 @@ export default {
         this.$refs[formName].validate((valid) => {
           if (valid) {
             let data = {
-              FBillTypeID: self.billTypeId,
+              FBillTypeID: self.form.billTypeId,
               FBillNo: self.form.billNo,
               FAgencyValue: self.form.adcd,
               FPerimeter: self.form.edge,
@@ -430,11 +448,22 @@ export default {
               .then(response => {
                 let data = response.data
                 if (data.code === 1) {
-                  self.form.fid = data.object
+                  self.files.data = {
+                    AttachType: 'image/*',
+                    FBillTypeID: Number(this.billTypeId),
+                    FLoanID: data.object
+                  }
                   self.form.isSubmited = true
-                  self.files1.data.FLoanID = self.form.fid
-                  self.files2.data.FLoanID = self.form.fid
-                  self.submitUpload()
+                  if (self.form.fid === '' || undefined) {
+                    self.submitUpload()
+                  } else {
+
+                  }
+                  // this.$message({
+                  //     message: self.fid != ''? '修改成功' : '新增成功！',
+                  //     type: 'success'
+                  // })
+                  // this.$emit('closeProAdd', false)
                 } else {
                   self.$message({
                     message: data.message,
@@ -455,7 +484,7 @@ export default {
         self.submitUpload()
       }
     },
-    getAttachTypeList () {
+    getAttachTypeList: function () {
       var self = this
       this.$axios.get('Files/GetAttachTypeList', {
         params: {
@@ -467,15 +496,9 @@ export default {
           if (data.code === 1) {
             _.each(data.object, obj => {
               if (obj.FName === '整改前照片') {
-                self.files1.data = {
-                  AttachType: obj.FID,
-                  FBillTypeID: Number(self.form.billTypeId)
-                }
+                self.files.accept1 = obj.FFileType
               } else if (obj.FName === '整改后照片') {
-                self.files2.data = {
-                  AttachType: obj.FID,
-                  FBillTypeID: Number(self.form.billTypeId)
-                }
+                self.files.accept2 = obj.FFileType
               }
             })
           } else {
@@ -495,79 +518,20 @@ export default {
      */
     getFilesUrl: function () {
       var self = this
-      this.$axios.get('Files/GetAttachTypeList', {
+      this.$axios.get('Files/GetFilesUrl', {
         params: {
-          FBillTypeID: this.billTypeId
+          FLoanID: self.fid,
+          FBillTypeID: self.billTypeId,
+          FAttachType: self.files.accept1
         }
       })
         .then(response => {
           let data = response.data
+          console.log(data)
           if (data.code === 1) {
-            _.each(data.object, obj => {
-              if (obj.FName === '整改前照片') {
-                self.files1.FAttachType = obj.FID
-                self.$axios.get('Files/GetFilesUrl', {
-                  params: {
-                    FAttachType: self.files1.FAttachType,
-                    FLoanID: self.fid,
-                    FBillTypeID: self.billTypeId
-                  }
-                })
-                  .then(response => {
-                    let data = response.data
-                    console.log(data)
-                    if (data.code === 1) {
-                      _.each(data.object, function (obj) {
-                        self.files1.fileList.push({
-                          name: obj.FileName,
-                          url: obj.FileUrl
-                        })
-                      })
-                    } else {
-                      self.$message({
-                        message: data.message,
-                        type: 'warning'
-                      })
-                    }
-                  })
-                  .catch(error => {
-                    console.log(error)
-                    self.$message.error(error.message)
-                  })
-              } else if (obj.FName === '整改后照片') {
-                self.files2.FAttachType = obj.FID
-                self.$axios.get('Files/GetFilesUrl', {
-                  params: {
-                    FAttachType: self.files2.FAttachType,
-                    FLoanID: self.fid,
-                    FBillTypeID: self.billTypeId
-                  }
-                })
-                  .then(response => {
-                    let data = response.data
-                    console.log(data)
-                    if (data.code === 1) {
-                      _.each(data.object, function (obj) {
-                        self.files2.fileList.push({
-                          name: obj.FileName,
-                          url: obj.FileUrl
-                        })
-                      })
-                    } else {
-                      self.$message({
-                        message: data.message,
-                        type: 'warning'
-                      })
-                    }
-                  })
-                  .catch(error => {
-                    console.log(error)
-                    self.$message.error(error.message)
-                  })
-              }
-            })
+
           } else {
-            self.$message({
+            this.$message({
               message: data.message,
               type: 'warning'
             })
@@ -579,9 +543,8 @@ export default {
         })
     },
     submitUpload () {
-      console.log('upload')
-      this.$refs.upload1.submit()
-      this.$refs.upload2.submit()
+      console.log(this.$refs.upload)
+      this.$refs.upload.submit()
     },
     uploadSuccess (response, file, fileLis) {
       var self = this

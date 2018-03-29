@@ -42,6 +42,7 @@ export default {
           console.log(data)
           if (data.code === 1) {
             self.name = data.object.UserName
+            localStorage.setItem('FLevel', data.object.FLevel)
           } else {
             self.$message.error(data.message)
           }

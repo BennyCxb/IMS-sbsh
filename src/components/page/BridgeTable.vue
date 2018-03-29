@@ -33,46 +33,37 @@
           <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
         </el-option>
       </el-select>
-      <el-select v-model="select_edge" placeholder="四边" class="handle-select mr10" clearable>
-        <el-option v-for="(item, i) in edgeOptions" :key="i" :label="item.label" :value="item.value"></el-option>
-      </el-select>
-      <el-select v-model="select_problem" placeholder="存在问题" class="handle-select mr10" clearable>
-        <el-option v-for="(item, i) in proOptions" :key="i" :label="item.label" :value="item.value"></el-option>
-      </el-select>
       <el-select v-model="select_status" placeholder="审核状态" class="handle-select mr10" clearable>
         <el-option v-for="(item, i) in staOptions" :key="i" :label="item.label" :value="item.value"></el-option>
       </el-select>
-      <el-select v-model="select_cttatus" placeholder="整改状态" class="handle-select mr10" clearable>
-        <el-option v-for="(item, i) in cstaOptions" :key="i" :label="item.label" :value="item.value"></el-option>
-      </el-select>
     </div>
     <div class="handle-box">
-      <el-input v-model="select_problem_num" placeholder="问题编号" class="handle-input mr10"></el-input>
+      <el-input v-model="select_problem_num" placeholder="项目编号" class="handle-input mr10"></el-input>
       <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
-      <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2">新增问题</el-button>
-      <vProblemForm :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow" @closeProAdd="closePro"></vProblemForm>
+      <el-button type="primary" icon="el-icon-plus" @click="addProblem">新增项目</el-button>
+      <bridge-form :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow"
+                    @closeProAdd="closePro">
+      </bridge-form>
     </div>
     <el-table :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange"
               stripe>
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="FAgencyName" label="行政区划">
       </el-table-column>
-      <el-table-column prop="FBillNo" label="问题编号" sortable>
+      <el-table-column prop="FBillNo" label="项目编号" sortable>
       </el-table-column>
-      <el-table-column prop="FLineName" label="线路名称">
+      <el-table-column prop="FLineName" label="项目名称">
       </el-table-column>
       <el-table-column prop="FMileage" label="里程">
       </el-table-column>
-      <el-table-column prop="FProbType" label="问题类型">
-      </el-table-column>
       <el-table-column prop="FStatusName" label="审核状态">
       </el-table-column>
-      <el-table-column label="操作" width="200">
+      <el-table-column label="操作" width="250">
         <template slot-scope="scope">
           <el-button size="small"
                      @click="handleEdit(scope.$index, scope.row)">编辑
           </el-button>
-          <el-button size="small" type="danger" v-if="(FLevel === 1 || FLevel === 3) && scope.row.FStatusName === '待修改'"
+          <el-button size="small" type="danger"
                      @click="handleDelete(scope.$index, scope.row)">删除
           </el-button>
         </template>
@@ -82,8 +73,7 @@
       <el-pagination
         @current-change="handleCurrentChange"
         layout="prev, pager, next"
-        :page-size="pageSize"
-        :total="total">
+        :total="1000">
       </el-pagination>
     </div>
   </div>
@@ -92,21 +82,12 @@
 
 <script>
 import _ from 'lodash'
-import vProblemForm from './ProblemForm.vue'
+import BridgeForm from './BridgeForm.vue'
 // import mapSelect from './MapSelect.vue'
 
 export default {
   components: {
-    vProblemForm
-  },
-  computed: {
-    data () {
-      return this.tableData
-    },
-    FLevel () {
-      let FLevel = Number(localStorage.getItem('FLevel'))
-      return FLevel ? FLevel : 4
-    }
+    BridgeForm
   },
   data () {
     return {
@@ -114,8 +95,6 @@ export default {
       billTypeID: '',
       tableData: [],
       cur_page: 1,
-      pageSize: 15,
-      total: 1,
       multipleSelection: [],
       select_cate: '',
       select_years: '',
@@ -147,6 +126,11 @@ export default {
     this.getProblemType()
     this.getStatusData()
     this.getChangeStatusData()
+  },
+  computed: {
+    data () {
+      return this.tableData
+    }
   },
   methods: {
     handleCurrentChange (val) {
@@ -189,7 +173,9 @@ export default {
         })
         .catch(function (error) {
           console.log(error)
-          self.$message.error(error.message)
+          self.$alert(error.message, '温馨提示', {
+            confirmButtonText: '确定'
+          })
         })
     },
     /**
@@ -215,7 +201,7 @@ export default {
         })
         .catch(function (error) {
           console.log(error)
-          self.$message.error(error.message)
+          this.$message.error(error.message)
         })
     },
     /**
@@ -241,7 +227,7 @@ export default {
         })
         .catch(function (error) {
           console.log(error)
-          self.$message.error(error.message)
+          this.$message.error(error.message)
         })
     },
     /**
@@ -267,7 +253,7 @@ export default {
         })
         .catch(function (error) {
           console.log(error)
-          self.$message.error(error.message)
+          this.$message.error(error.message)
         })
     },
     /**
@@ -293,7 +279,7 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          self.$message.error(error.message)
+          this.$message.error(error.message)
         })
     },
     /**
@@ -303,12 +289,10 @@ export default {
       let self = this
       this.$axios.post('LoanApply/GetSJList', {
         curr: this.cur_page,
-        pageSize: this.pageSize,
+        pageSize: 15,
         FAgencyValue: this.select_adcd,
         FBillTypeID: this.billTypeID,
         FBillNo: this.select_problem_num,
-        FEdge: this.select_edge,
-        FProbType: this.select_problem,
         FStatus: this.select_status,
         FYear: this.select_years,
         FMonth: this.select_mouths,
@@ -319,11 +303,10 @@ export default {
         .then(response => {
           let data = response.data
           self.tableData = data.object
-          self.total = data.page.totalRecords
         })
         .catch(error => {
           console.log(error)
-          self.$message.error(error.message)
+          this.$message.error(error.message)
         })
     },
     /**
@@ -365,9 +348,7 @@ export default {
               })
             })
         })
-        .catch(error => {
-          console.log(error)
-          self.$message.error(error.message)
+        .catch(_ => {
         })
     },
     handleSelectionChange (val) {
@@ -402,7 +383,6 @@ export default {
       this.getStatus(this.$route.path)
       this.getBillTypeId()
       this.getBreadcrumb()
-      this.getData()
     }
   }
 }

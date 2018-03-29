@@ -31,15 +31,15 @@ export default new Router({
         },
         {
           path: '/btable:fid-:sid-:tid-:btid',
-          component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
+          component: resolve => require(['../components/page/BridgeTable.vue'], resolve)
         },
         {
           path: '/btable:fid-:sid-:btid',
-          component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
+          component: resolve => require(['../components/page/BridgeTable.vue'], resolve)
         },
         {
           path: '/btable:fid-:btid',
-          component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
+          component: resolve => require(['../components/page/BridgeTable.vue'], resolve)
         },
         {
           path: '/rtable:fid-:sid-:tid-:btid',

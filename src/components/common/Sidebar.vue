@@ -1,8 +1,9 @@
 <template>
   <div class="sidebar">
     <el-menu class="el-menu-vertical-demo"
+             :default-active="onRoutes"
              unique-opened
-             background-color="#545c64"
+             background-color="#303133"
              text-color="#fff"
              active-text-color="#409EFF">
       <!--一级菜单-->
@@ -18,8 +19,7 @@
             <template v-for="(subItem,i) in item.subs">
               <template v-if="subItem.subs">
                 <el-submenu :key="i"
-                            :index="subItem.index"
-                            background-color="#000">
+                            :index="subItem.index">
                   <template slot="title">
                     <i :class="item.icon"></i>
                     <span>{{ subItem.title }}</span>
@@ -116,15 +116,6 @@ export default {
         let items3 = []
         // 一级菜单
         _.each(data.MenuJson, (obj1) => {
-          // if (obj1.FName === '问题点位') {
-          //     url = 'ptable'
-          // } else if (obj1.FName === '桥下空间利用') {
-          //     url = 'btable'
-          // } else if (obj1.FName === '精品示范道路') {
-          //     url = 'rtable'
-          // } else if (obj1.FName === '精品示范入城口') {
-          //     url = 'ctable'
-          // }
           if (obj1.FChild.length > 0) {
             // 二级菜单
             _.each(obj1.FChild, (obj2) => {
