@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="选择位置" :visible.sync="mapShow" size="tiny" :before-close="handleClose" width="100%">
+  <el-dialog title="选择位置" :visible.sync="mapShow" :before-close="handleClose" width="80%">
     <div class="amap-page-container">
       <el-amap-search-box class="search-box" :search-option="searchOption"
                           :on-search-result="onSearchResult"></el-amap-search-box>

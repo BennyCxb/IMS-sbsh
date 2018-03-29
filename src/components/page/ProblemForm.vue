@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="title" :visible.sync="formShow" :before-close="handleClose" width="80%">
-    <el-form :model="form" ref="probForm" class="demo-form-inline demo-ruleForm">
+    <el-form :model="form" :rules="rules" ref="probForm" class="demo-form-inline demo-ruleForm">
       <el-row>
         <el-col :span="12">
           <el-form-item label="年度月份" :label-width="formLabelWidth" prop="month">
@@ -169,7 +169,7 @@ export default {
       files: {
         accept1: 'image/*',
         headers: {
-          Authorization: 'Bearer ' + this.$cookies.get('TZManage')
+          Authorization: this.getHearder()
         },
         data: {
           AttachType: 'image/*',
@@ -228,6 +228,9 @@ export default {
     },
     getBillTypeId () {
       this.billTypeID = this.$route.params.btid
+    },
+    getHearder () {
+      return 'Bearer ' + this.$cookies.get('TZManage')
     },
     openMap () {
       this.$emit('selectMap', true)

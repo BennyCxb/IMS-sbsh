@@ -64,14 +64,7 @@ import _ from 'lodash'
 export default {
   data () {
     return {
-      items: [
-        {
-          icon: 'el-icon-setting',
-          index: 'readme',
-          title: '自述',
-          url: 'readme'
-        }
-      ]
+      items: []
     }
   },
   computed: {
@@ -194,7 +187,7 @@ export default {
         self.items = [{
           icon: 'el-icon-setting',
           index: 'readme',
-          title: '自述',
+          title: '首页',
           url: 'readme'
         }].concat(items1)
       })
