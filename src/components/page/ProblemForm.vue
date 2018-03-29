@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="title" :visible.sync="formShow" :before-close="handleClose" width="80%">
-    <el-form :model="form" :rules="rules" ref="probForm" class="demo-form-inline demo-ruleForm">
+    <el-form :model="form" :rules="rules" ref="probForm" class="demo-form-inline demo-ruleForm" :disabled="form.FStatus !== 0 && !form.FChangeStatusName">
       <el-row>
         <el-col :span="12">
           <el-form-item label="年度月份" :label-width="formLabelWidth" prop="month">
@@ -78,7 +78,7 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="问题描述" :label-width="formLabelWidth" prop="proType">
+          <el-form-item label="问题描述" :label-width="formLabelWidth" prop="proDescribe">
             <el-input v-model="form.proDescribe"
                       type="textarea"
                       :rows="2"
@@ -91,8 +91,7 @@
           <el-form-item label="备注" :label-width="formLabelWidth" prop="remarks">
             <el-input v-model="form.remarks"
                       type="textarea"
-                      :rows="2"
-                      placeholder="请输入内容"></el-input>
+                      :rows="2"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -120,6 +119,32 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <!--<el-row>-->
+        <!--<el-col :span="24">-->
+          <!--<el-form-item label="整改后照片" :label-width="formLabelWidth">-->
+            <!--<el-upload-->
+              <!--ref="upload2"-->
+              <!--:action="url"-->
+              <!--:headers="headers"-->
+              <!--:auto-upload="false"-->
+              <!--list-type="picture-card"-->
+              <!--:on-preview="handlePictureCardPreview"-->
+              <!--:data="files2.data"-->
+              <!--:file-list="files2.fileList"-->
+              <!--accept="image/*"-->
+              <!--:on-success="uploadSuccess"-->
+              <!--multiple>-->
+              <!--<i class="el-icon-plus"></i>-->
+            <!--</el-upload>-->
+            <!--<el-dialog :visible.sync="dialogVisible"-->
+                       <!--append-to-body>-->
+              <!--<img width="100%" :src="dialogImageUrl" alt="">-->
+            <!--</el-dialog>-->
+          <!--</el-form-item>-->
+        <!--</el-col>-->
+      <!--</el-row>-->
+    </el-form>
+    <el-form class="demo-form-inline demo-ruleForm" :disabled="form.FStatus !== 0 && form.FChangeStatusName">
       <el-row>
         <el-col :span="24">
           <el-form-item label="整改后照片" :label-width="formLabelWidth">
@@ -145,9 +170,14 @@
         </el-col>
       </el-row>
     </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="resetForm('probForm')">重置</el-button>
-      <el-button type="primary" @click="submit('probForm')">确 定</el-button>
+    <div slot="footer" class="dialog-footer" v-if="form.FStatus === 1">
+      <el-button type="primary" @click="submit('probForm')">审核通过</el-button>
+      <el-button @click="submit('probForm')">审核不通过</el-button>
+    </div>
+    <div slot="footer" class="dialog-footer" v-else>
+      <el-button @click="resetForm('probForm')" v-if="!form.FStatus && !form.fid">重置</el-button>
+      <el-button type="primary" @click="submit('probForm')" v-if="!form.FStatus">保 存</el-button>
+      <el-button type="primary" @click="submitAudit" v-if="fid">提交审核</el-button>
     </div>
   </el-dialog>
 </template>
@@ -193,7 +223,10 @@ export default {
         position: this.sposition,
         proType: 1,
         proDescribe: '',
-        remarks: ''
+        remarks: '',
+        FStatus: 0,
+        FChangeStatusName: 0,
+        FCheckLevel: 0
       },
       files1: {
         data: {},
@@ -233,7 +266,7 @@ export default {
           {required: false}
         ],
         proDescribe: [
-          {required: false}
+          {required: true, message: '请输入问题描述', trigger: 'blur'}
         ],
         remarks: [
           {required: false}
@@ -351,7 +384,7 @@ export default {
       Object.assign(this.$data.form, this.$options.data().form)
       Object.assign(this.$data.form, this.$options.data().files)
       if (this.fid !== '') {
-        this.title = '编辑问题'
+        this.title = '问题详情'
         this.getFilesUrl()
         this.$axios.get('LoanApply/GetApplyInfo', {
           params: {
@@ -377,7 +410,10 @@ export default {
                 position: obj.FGPS,
                 proType: obj.FProbTypeID,
                 proDescribe: obj.FProbDescribe,
-                remarks: obj.FRemark
+                remarks: obj.FRemark,
+                FStatus: obj.FStatus,
+                FChangeStatusName: obj.FChangeStatusName,
+                FCheckLevel: obj.FCheckLevel
               }
             } else {
               self.$message({
@@ -515,7 +551,7 @@ export default {
                 })
                   .then(response => {
                     let data = response.data
-                    console.log(data)
+                    self.files1.fileList = []
                     if (data.code === 1) {
                       _.each(data.object, function (obj) {
                         self.files1.fileList.push({
@@ -545,7 +581,7 @@ export default {
                 })
                   .then(response => {
                     let data = response.data
-                    console.log(data)
+                    self.files2.fileList = []
                     if (data.code === 1) {
                       _.each(data.object, function (obj) {
                         self.files2.fileList.push({
@@ -578,6 +614,7 @@ export default {
           self.$message.error(error.message)
         })
     },
+    // 提交整改照片
     submitUpload () {
       console.log('upload')
       this.$refs.upload1.submit()
@@ -607,14 +644,37 @@ export default {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
-    imageuploaded (res) {
-      console.log(res)
-    },
     handleError () {
       this.$notify.error({
         title: '上传失败',
         message: '图片上传接口上传失败，可更改为自己的服务器接口'
       })
+    },
+    submitAudit () {
+      var self = this
+      this.$axios.post('LoanApply/SubmitSJApply', {
+        FBillTypeID: self.billTypeId,
+        FID: self.form.fid
+      })
+        .then(response => {
+          let data = response.data
+          if (data.code === 1) {
+            this.$message({
+              message: '提交审核成功',
+              type: 'success'
+            })
+            this.$emit('closeProAdd', false)
+          } else {
+            self.$message({
+              message: data.message,
+              type: 'warning'
+            })
+          }
+        })
+        .catch(error => {
+          console.log(error)
+          self.$message.error(error.message)
+        })
     }
   },
   props: ['fid', 'formShow', 'sposition', 'billTypeId'],

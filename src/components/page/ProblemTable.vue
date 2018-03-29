@@ -67,10 +67,12 @@
       </el-table-column>
       <el-table-column prop="FStatusName" label="审核状态">
       </el-table-column>
+      <el-table-column prop="FChangeStatusName" label="整改状态">
+      </el-table-column>
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-button size="small"
-                     @click="handleEdit(scope.$index, scope.row)">编辑
+                     @click="handleEdit(scope.$index, scope.row)">查看
           </el-button>
           <el-button size="small" type="danger" v-if="(FLevel === 1 || FLevel === 3) && scope.row.FStatusName === '待修改'"
                      @click="handleDelete(scope.$index, scope.row)">删除
