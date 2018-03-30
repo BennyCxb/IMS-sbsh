@@ -35,7 +35,7 @@ export default {
       }
     },
     getUsername () {
-      var self = this
+      let self = this
       this.$axios.get('Login/IsLogin')
         .then(function (response) {
           let data = response.data

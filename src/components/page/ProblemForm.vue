@@ -394,7 +394,7 @@ export default {
           .then(response => {
             let data = response.data
             if (data.code === 1) {
-              var obj = data.object
+              let obj = data.object
               self.form = {
                 isSubmited: false,
                 fid: obj.FID,
@@ -492,7 +492,7 @@ export default {
       }
     },
     getAttachTypeList () {
-      var self = this
+      let self = this
       this.$axios.get('Files/GetAttachTypeList', {
         params: {
           FBillTypeID: self.form.billTypeId
@@ -530,7 +530,7 @@ export default {
      * 获取整改照片地址
      */
     getFilesUrl: function () {
-      var self = this
+      let self = this
       this.$axios.get('Files/GetAttachTypeList', {
         params: {
           FBillTypeID: this.billTypeId
@@ -621,8 +621,8 @@ export default {
       this.$refs.upload2.submit()
     },
     uploadSuccess (response, file, fileLis) {
-      var self = this
-      var data = response
+      let self = this
+      let data = response
       console.log(response)
       if (data.code === 1) {
         this.$message({
@@ -651,7 +651,7 @@ export default {
       })
     },
     submitAudit () {
-      var self = this
+      let self = this
       this.$axios.post('LoanApply/SubmitSJApply', {
         FBillTypeID: self.billTypeId,
         FID: self.form.fid

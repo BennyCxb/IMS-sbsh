@@ -156,7 +156,7 @@ export default {
       this.getData()
     },
     getStatus (urlStr) {
-      var urlStrArr = urlStr.split('/')
+      let urlStrArr = urlStr.split('/')
       return urlStrArr[urlStrArr.length - 1]
     },
     /**
