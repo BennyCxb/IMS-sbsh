@@ -1,6 +1,10 @@
 <template>
   <el-dialog :title="title" :visible.sync="formShow" :before-close="handleClose" width="80%">
-    <el-form :model="form" :rules="rules" ref="probForm" class="demo-form-inline demo-ruleForm" :disabled="form.FStatus !== 0 && !form.FChangeStatusName">
+    <el-form :model="form"
+             :rules="rules"
+             :disabled="form.FStatus !== 0 && !form.FChangeStatusName"
+             ref="probForm"
+             class="demo-form-inline demo-ruleForm">
       <el-row>
         <el-col :span="12">
           <el-form-item label="年度月份" :label-width="formLabelWidth" prop="month">
@@ -107,10 +111,12 @@
               :on-preview="handlePictureCardPreview"
               :data="files1.data"
               :file-list="files1.fileList"
-              accept="image/*"
+              :beforeUpload="beforeAvatarUpload"
               :on-success="uploadSuccess"
+              accept="image/*"
               multiple>
               <i class="el-icon-plus"></i>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible"
                        append-to-body>
@@ -157,10 +163,12 @@
               :on-preview="handlePictureCardPreview"
               :data="files2.data"
               :file-list="files2.fileList"
-              accept="image/*"
+              :beforeUpload="beforeAvatarUpload"
               :on-success="uploadSuccess"
+              accept="image/*"
               multiple>
               <i class="el-icon-plus"></i>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible"
                        append-to-body>
@@ -379,13 +387,10 @@ export default {
      * 获取问题详情
      */
     getInfo () {
-      console.log(this.fid)
       let self = this
-      Object.assign(this.$data.form, this.$options.data().form)
-      Object.assign(this.$data.form, this.$options.data().files)
       if (this.fid !== '') {
         this.title = '问题详情'
-        this.getFilesUrl()
+        // this.getFilesUrl()
         this.$axios.get('LoanApply/GetApplyInfo', {
           params: {
             FID: this.fid
@@ -495,7 +500,7 @@ export default {
       let self = this
       this.$axios.get('Files/GetAttachTypeList', {
         params: {
-          FBillTypeID: self.form.billTypeId
+          FBillTypeID: self.billTypeId
         }
       })
         .then(response => {
@@ -503,14 +508,23 @@ export default {
           if (data.code === 1) {
             _.each(data.object, obj => {
               if (obj.FName === '整改前照片') {
-                self.files1.data = {
-                  AttachType: obj.FID,
-                  FBillTypeID: Number(self.form.billTypeId)
+                self.files1 = {
+                  data: {
+                    AttachType: obj.FID,
+                    FBillTypeID: Number(self.billTypeId)
+                  },
+                  fileList: []
+                }
+                if (self.form.fid) {
+                  self.getFilesUrl(self.files1, obj.FID)
                 }
               } else if (obj.FName === '整改后照片') {
                 self.files2.data = {
                   AttachType: obj.FID,
-                  FBillTypeID: Number(self.form.billTypeId)
+                  FBillTypeID: Number(self.billTypeId)
+                }
+                if (self.form.fid) {
+                  self.getFilesUrl(self.files1, obj.FID)
                 }
               }
             })
@@ -529,78 +543,23 @@ export default {
     /**
      * 获取整改照片地址
      */
-    getFilesUrl: function () {
+    getFilesUrl: function (files, FAttachType) {
       let self = this
-      this.$axios.get('Files/GetAttachTypeList', {
+      self.$axios.get('Files/GetFilesUrl', {
         params: {
-          FBillTypeID: this.billTypeId
+          FAttachType: FAttachType,
+          FLoanID: self.fid,
+          FBillTypeID: self.billTypeId
         }
       })
         .then(response => {
           let data = response.data
           if (data.code === 1) {
-            _.each(data.object, obj => {
-              if (obj.FName === '整改前照片') {
-                self.files1.FAttachType = obj.FID
-                self.$axios.get('Files/GetFilesUrl', {
-                  params: {
-                    FAttachType: self.files1.FAttachType,
-                    FLoanID: self.fid,
-                    FBillTypeID: self.billTypeId
-                  }
-                })
-                  .then(response => {
-                    let data = response.data
-                    self.files1.fileList = []
-                    if (data.code === 1) {
-                      _.each(data.object, function (obj) {
-                        self.files1.fileList.push({
-                          name: obj.FileName,
-                          url: obj.FileUrl
-                        })
-                      })
-                    } else {
-                      self.$message({
-                        message: data.message,
-                        type: 'warning'
-                      })
-                    }
-                  })
-                  .catch(error => {
-                    console.log(error)
-                    self.$message.error(error.message)
-                  })
-              } else if (obj.FName === '整改后照片') {
-                self.files2.FAttachType = obj.FID
-                self.$axios.get('Files/GetFilesUrl', {
-                  params: {
-                    FAttachType: self.files2.FAttachType,
-                    FLoanID: self.fid,
-                    FBillTypeID: self.billTypeId
-                  }
-                })
-                  .then(response => {
-                    let data = response.data
-                    self.files2.fileList = []
-                    if (data.code === 1) {
-                      _.each(data.object, function (obj) {
-                        self.files2.fileList.push({
-                          name: obj.FileName,
-                          url: obj.FileUrl
-                        })
-                      })
-                    } else {
-                      self.$message({
-                        message: data.message,
-                        type: 'warning'
-                      })
-                    }
-                  })
-                  .catch(error => {
-                    console.log(error)
-                    self.$message.error(error.message)
-                  })
-              }
+            _.each(data.object, function (obj) {
+              files.fileList.push({
+                name: obj.FileName,
+                url: obj.FileUrl
+              })
             })
           } else {
             self.$message({
@@ -619,6 +578,25 @@ export default {
       console.log('upload')
       this.$refs.upload1.submit()
       this.$refs.upload2.submit()
+    },
+    beforeAvatarUpload (file) {
+      console.log(file)
+      var testmsg = file.type.substring(0, file.type.lastIndexOf('/') + 1)
+      const extension = testmsg === 'image/'
+      const isLt2M = file.size / 1024 / 1024 < 3
+      if (!extension) {
+        this.$message({
+          message: '上传文件只能是图片文件!',
+          type: 'warning'
+        })
+      }
+      if (!isLt2M) {
+        this.$message({
+          message: '上传图片大小不能超过 3MB!',
+          type: 'warning'
+        })
+      }
+      return extension && isLt2M
     },
     uploadSuccess (response, file, fileLis) {
       let self = this
@@ -686,8 +664,14 @@ export default {
   },
   watch: {
     formShow (curVal) {
-      if (curVal) {
+      if (curVal === true) {
         this.getInfo()
+        this.getAttachTypeList()
+      } else {
+        this.resetForm('probForm')
+        Object.assign(this.$data.form, this.$options.data().form)
+        Object.assign(this.$data.files1, this.$options.data().files1)
+        Object.assign(this.$data.files2, this.$options.data().files2)
       }
     },
     fid (curVal) {
