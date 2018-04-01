@@ -43,6 +43,7 @@ export default {
           if (data.code === 1) {
             self.name = data.object.UserName
             localStorage.setItem('FLevel', data.object.FLevel)
+            localStorage.setItem('FAgencyValue', data.object.FAgencyValue)
           } else {
             self.$message.error(data.message)
           }

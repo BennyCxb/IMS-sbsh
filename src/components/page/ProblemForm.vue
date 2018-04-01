@@ -125,8 +125,6 @@
           </el-form-item>
         </el-col>
       </el-row>
-    </el-form>
-    <el-form class="demo-form-inline demo-ruleForm" :disabled="form.FStatus !== 0">
       <el-row>
         <el-col :span="24">
           <el-form-item label="整改后照片" :label-width="formLabelWidth">
@@ -184,12 +182,12 @@
     </div>
     <div slot="footer" class="dialog-footer" v-if="form.FStatus === 1">
       <el-button type="primary" @click="openAudit">立即审核</el-button>
-      <problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit"></problem-audit>
+      <problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>
     </div>
     <div slot="footer" class="dialog-footer" v-else>
-      <el-button @click="resetForm('probForm')" v-if="!form.FStatus && !form.fid">重置</el-button>
+      <el-button @click="resetForm('probForm')" v-if="!form.FStatus && !isEdit">重置</el-button>
       <el-button type="primary" @click="submit('probForm')" v-if="!form.FStatus">保 存</el-button>
-      <el-button type="primary" @click="submitAudit" v-if="fid && form.FStatus === 0">提交审核</el-button>
+      <el-button type="primary" @click="submitAudit" v-if="fid && form.FStatus === 0">整改完成</el-button>
     </div>
   </el-dialog>
 </template>
@@ -225,6 +223,7 @@ export default {
   },
   data () {
     return {
+      isEdit: false,
       title: '新增问题',
       append: true,
       innerVisible: false,
@@ -333,12 +332,21 @@ export default {
         .then(response => {
           let data = response.data
           let adcdlist = []
-          _.each(data.object, (obj) => {
+          let FAgencyValue = localStorage.getItem('FAgencyValue')
+          if (FAgencyValue !== 'null') {
+            let item = _.find(data.object, {FValue: FAgencyValue})
             adcdlist.push({
-              value: Number(obj.FValue),
-              label: obj.FName
+              value: Number(item.FValue),
+              label: item.FName
             })
-          })
+          } else {
+            _.each(data.object, (obj) => {
+              adcdlist.push({
+                value: Number(obj.FValue),
+                label: obj.FName
+              })
+            })
+          }
           self.adcdOptions = [].concat(adcdlist)
         })
         .catch(error => {
@@ -403,55 +411,48 @@ export default {
      */
     getInfo () {
       let self = this
-      if (this.fid != '') {
-        this.title = '问题详情'
-        // this.getFilesUrl()
-        this.getAuditList()
-        this.$axios.get('LoanApply/GetApplyInfo', {
-          params: {
-            FID: this.fid
+      this.getAuditList()
+      this.$axios.get('LoanApply/GetApplyInfo', {
+        params: {
+          FID: this.fid
+        }
+      })
+        .then(response => {
+          let data = response.data
+          if (data.code === 1) {
+            let obj = data.object
+            self.form = {
+              isSubmited: false,
+              fid: obj.FID,
+              billTypeId: obj.FBillTypeID,
+              billNo: obj.FBillNo,
+              adcd: Number(obj.FAgencyValue),
+              edge: obj.FPerimeter,
+              town: obj.FTwon,
+              year: obj.FYear,
+              month: obj.FYear + '-' + obj.FMonth,
+              lineName: obj.FLineName,
+              mileage: obj.FMileage,
+              position: obj.FGPS,
+              proType: obj.FProbTypeID,
+              proDescribe: obj.FProbDescribe,
+              remarks: obj.FRemark,
+              FStatus: obj.FStatus,
+              FChangeStatusName: obj.FChangeStatusName,
+              FCheckLevel: obj.FCheckLevel
+            }
+            self.getAttachTypeList(obj.FID)
+          } else {
+            self.$message({
+              message: data.message,
+              type: 'warning'
+            })
           }
         })
-          .then(response => {
-            let data = response.data
-            console.log(data)
-            if (data.code === 1) {
-              let obj = data.object
-              self.form = {
-                isSubmited: false,
-                fid: obj.FID,
-                billTypeId: obj.FBillTypeID,
-                billNo: obj.FBillNo,
-                adcd: Number(obj.FAgencyValue),
-                edge: obj.FPerimeter,
-                town: obj.FTwon,
-                year: obj.FYear,
-                month: obj.FYear + '-' + obj.FMonth,
-                lineName: obj.FLineName,
-                mileage: obj.FMileage,
-                position: obj.FGPS,
-                proType: obj.FProbTypeID,
-                proDescribe: obj.FProbDescribe,
-                remarks: obj.FRemark,
-                FStatus: obj.FStatus,
-                FChangeStatusName: obj.FChangeStatusName,
-                FCheckLevel: obj.FCheckLevel
-              }
-              self.getAttachTypeList()
-            } else {
-              self.$message({
-                message: data.message,
-                type: 'warning'
-              })
-            }
-          })
-          .catch(error => {
-            console.log(error)
-            self.$message.error(error.message)
-          })
-      } else {
-        this.title = '新增问题'
-      }
+        .catch(error => {
+          console.log(error)
+          self.$message.error(error.message)
+        })
     },
     /**
      * 重置表单
@@ -491,9 +492,7 @@ export default {
                 if (data.code === 1) {
                   self.form.fid = data.object
                   self.form.isSubmited = true
-                  self.files1.data.FLoanID = self.form.fid
-                  self.files2.data.FLoanID = self.form.fid
-                  self.submitUpload()
+                  self.getAttachTypeList(self.form.fid, true)
                 } else {
                   self.$message({
                     message: data.message,
@@ -511,10 +510,11 @@ export default {
           }
         })
       } else {
-        self.submitUpload()
+        self.submitUpload1()
+        self.submitUpload2()
       }
     },
-    getAttachTypeList () {
+    getAttachTypeList (FLoanID, isUpload) {
       let self = this
       this.$axios.get('Files/GetAttachTypeList', {
         params: {
@@ -526,23 +526,24 @@ export default {
           if (data.code === 1) {
             _.each(data.object, obj => {
               if (obj.FName === '整改前照片') {
-                self.files1 = {
-                  data: {
-                    AttachType: obj.FID,
-                    FBillTypeID: Number(self.billTypeId)
-                  },
-                  fileList: []
-                }
-                if (self.form.fid) {
+                self.files1.data.FLoanID = FLoanID
+                self.files1.data.AttachType = obj.FID
+                self.files1.data.FBillTypeID = Number(self.billTypeId)
+                if (isUpload) {
+                  self.submitUpload1()
+                } else {
+                  self.files1.fileList = []
                   self.getFilesUrl(self.files1, obj.FID)
                 }
               } else if (obj.FName === '整改后照片') {
-                self.files2.data = {
-                  AttachType: obj.FID,
-                  FBillTypeID: Number(self.billTypeId)
-                }
-                if (self.form.fid) {
-                  self.getFilesUrl(self.files1, obj.FID)
+                self.files2.data.FLoanID = FLoanID
+                self.files2.data.AttachType = obj.FID
+                self.files2.data.FBillTypeID = Number(self.billTypeId)
+                if (isUpload) {
+                  self.submitUpload2()
+                } else {
+                  self.files2.fileList = []
+                  self.getFilesUrl(self.files2, obj.FID)
                 }
               }
             })
@@ -563,11 +564,11 @@ export default {
      */
     getFilesUrl: function (files, FAttachType) {
       let self = this
-      self.$axios.get('Files/GetFilesUrl', {
+      this.$axios.get('Files/GetFilesUrl', {
         params: {
           FAttachType: FAttachType,
-          FLoanID: self.fid,
-          FBillTypeID: self.billTypeId
+          FLoanID: this.fid,
+          FBillTypeID: this.billTypeId
         }
       })
         .then(response => {
@@ -591,10 +592,16 @@ export default {
           self.$message.error(error.message)
         })
     },
-    // 提交整改照片
-    submitUpload () {
-      console.log('upload')
+    /**
+     * 提交整改前照片
+     */
+    submitUpload1 () {
       this.$refs.upload1.submit()
+    },
+    /**
+     * 提交整改后照片
+     */
+    submitUpload2 () {
       this.$refs.upload2.submit()
     },
     beforeAvatarUpload (file) {
@@ -621,6 +628,7 @@ export default {
       let data = response
       console.log(response)
       if (data.code === 1) {
+        this.form.isSubmited = false
         this.$message({
           message: self.fid !== '' ? '修改成功' : '新增成功！',
           type: 'success'
@@ -677,9 +685,10 @@ export default {
     },
     closeAudit (msg) {
       this.dialogAuditShow = false
-      if (msg) {
-        this.$emit('closeProAdd', false)
-      }
+    },
+    closePro (msg) {
+      console.log(msg)
+      location.reload()
     },
     getAuditList () {
       let self = this
@@ -715,13 +724,18 @@ export default {
     this.getAdcd()
     this.getEdge()
     this.getProblemType()
-    this.getAttachTypeList()
   },
   watch: {
     formShow (curVal) {
       if (curVal === true) {
-        this.getInfo()
-        // this.getAttachTypeList()
+        if (this.fid) {
+          this.isEdit = true
+          this.title = '问题详情'
+          this.getInfo()
+        } else {
+          this.isEdit = false
+          this.title = '新增问题'
+        }
       } else {
         this.resetForm('probForm')
         Object.assign(this.$data.form, this.$options.data().form)

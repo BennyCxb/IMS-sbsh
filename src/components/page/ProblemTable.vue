@@ -4,11 +4,9 @@
       <el-breadcrumb separator="/">
         <el-breadcrumb-item v-for="(item, i) in breadcrumb" :key="i"><i class="el-icon-menu" v-if="i === 0"></i> {{item}}
         </el-breadcrumb-item>
-        <!--<el-breadcrumb-item>基础表格</el-breadcrumb-item>-->
       </el-breadcrumb>
     </div>
     <div class="handle-box">
-      <!--<el-button type="primary" icon="delete" class="handle-del mr10" @click="delAll">批量删除</el-button>-->
       <el-date-picker
         class="handle-select"
         v-model="select_years"
@@ -42,9 +40,9 @@
       <el-select v-model="select_status" placeholder="审核状态" class="handle-select mr10" clearable>
         <el-option v-for="(item, i) in staOptions" :key="i" :label="item.label" :value="item.value"></el-option>
       </el-select>
-      <el-select v-model="select_cttatus" placeholder="整改状态" class="handle-select mr10" clearable>
-        <el-option v-for="(item, i) in cstaOptions" :key="i" :label="item.label" :value="item.value"></el-option>
-      </el-select>
+      <!--<el-select v-model="select_cttatus" placeholder="整改状态" class="handle-select mr10" clearable>-->
+        <!--<el-option v-for="(item, i) in cstaOptions" :key="i" :label="item.label" :value="item.value"></el-option>-->
+      <!--</el-select>-->
     </div>
     <div class="handle-box">
       <el-input v-model="select_problem_num" placeholder="问题编号" class="handle-input mr10"></el-input>
@@ -52,7 +50,7 @@
       <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2">新增问题</el-button>
       <vProblemForm :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow" @closeProAdd="closePro"></vProblemForm>
     </div>
-    <el-table :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange"
+    <el-table v-loading="loading" :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange"
               stripe>
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="FAgencyName" label="行政区划">
@@ -67,8 +65,8 @@
       </el-table-column>
       <el-table-column prop="FStatusName" label="审核状态">
       </el-table-column>
-      <el-table-column prop="FChangeStatusName" label="整改状态">
-      </el-table-column>
+      <!--<el-table-column prop="FChangeStatusName" label="整改状态">-->
+      <!--</el-table-column>-->
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-button size="small"
@@ -95,7 +93,6 @@
 <script>
 import _ from 'lodash'
 import vProblemForm from './ProblemForm.vue'
-// import mapSelect from './MapSelect.vue'
 
 export default {
   components: {
@@ -107,7 +104,7 @@ export default {
     },
     FLevel () {
       let FLevel = Number(localStorage.getItem('FLevel'))
-      return FLevel ? FLevel : 4
+      return FLevel || 4
     }
   },
   data () {
@@ -136,7 +133,8 @@ export default {
       staOptions: [],
       cstaOptions: [],
       proAddShow: false,
-      breadcrumb: []
+      breadcrumb: [],
+      loading: true
     }
   },
   created () {
@@ -303,6 +301,7 @@ export default {
      */
     getData () {
       let self = this
+      this.loading = true
       this.$axios.post('LoanApply/GetSJList', {
         curr: this.cur_page,
         pageSize: this.pageSize,
@@ -320,11 +319,13 @@ export default {
       })
         .then(response => {
           let data = response.data
+          self.loading = false
           self.tableData = data.object
           self.total = data.page.totalRecords
         })
         .catch(error => {
           console.log(error)
+          self.loading = false
           self.$message.error(error.message)
         })
     },

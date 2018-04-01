@@ -27,8 +27,13 @@ export default {
     }
   },
   methods: {
-    handleClose (msg) {
+    handleClose () {
+      this.$emit('closeAudit', false)
+    },
+    probClose (msg) {
+      console.log(msg)
       this.$emit('closeAudit', msg)
+      this.$emit('closePro', false)
     },
     AuditPass () {
       let self = this
@@ -46,7 +51,7 @@ export default {
               message: '审核通过',
               type: 'success'
             })
-            self.handleClose(1)
+            self.probClose(true)
           } else {
             self.$message({
               message: data.message,
@@ -69,6 +74,7 @@ export default {
               message: '请输入不通过原因',
               type: 'warning'
             })
+            return false
           }
           this.$axios.post('LoanApply/RejectSJApply', {
             FBillTypeID: data.FBillTypeID,
@@ -83,7 +89,7 @@ export default {
                   message: '审核不通过',
                   type: 'success'
                 })
-                self.handleClose(1)
+                self.probClose(true)
               } else {
                 self.$message({
                   message: data.message,
