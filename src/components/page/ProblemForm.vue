@@ -125,32 +125,8 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <!--<el-row>-->
-        <!--<el-col :span="24">-->
-          <!--<el-form-item label="整改后照片" :label-width="formLabelWidth">-->
-            <!--<el-upload-->
-              <!--ref="upload2"-->
-              <!--:action="url"-->
-              <!--:headers="headers"-->
-              <!--:auto-upload="false"-->
-              <!--list-type="picture-card"-->
-              <!--:on-preview="handlePictureCardPreview"-->
-              <!--:data="files2.data"-->
-              <!--:file-list="files2.fileList"-->
-              <!--accept="image/*"-->
-              <!--:on-success="uploadSuccess"-->
-              <!--multiple>-->
-              <!--<i class="el-icon-plus"></i>-->
-            <!--</el-upload>-->
-            <!--<el-dialog :visible.sync="dialogVisible"-->
-                       <!--append-to-body>-->
-              <!--<img width="100%" :src="dialogImageUrl" alt="">-->
-            <!--</el-dialog>-->
-          <!--</el-form-item>-->
-        <!--</el-col>-->
-      <!--</el-row>-->
     </el-form>
-    <el-form class="demo-form-inline demo-ruleForm" :disabled="form.FStatus !== 0 && form.FChangeStatusName">
+    <el-form class="demo-form-inline demo-ruleForm" :disabled="form.FStatus !== 0">
       <el-row>
         <el-col :span="24">
           <el-form-item label="整改后照片" :label-width="formLabelWidth">
@@ -178,25 +154,55 @@
         </el-col>
       </el-row>
     </el-form>
+    <div v-if="fid != ''">
+      <hr/>
+      <el-table
+        :data="auditList"
+        max-height="250"
+        style="width: 100%">
+        <el-table-column
+          prop="FAddTime"
+          label="日期"
+          width="180"
+          :formatter="formatDatetime">
+        </el-table-column>
+        <el-table-column
+          prop="FLevelName"
+          label="事件"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="FName"
+          label="操作用户"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="FRemark"
+          label="结果">
+        </el-table-column>
+      </el-table>
+    </div>
     <div slot="footer" class="dialog-footer" v-if="form.FStatus === 1">
-      <el-button type="primary" @click="submit('probForm')">审核通过</el-button>
-      <el-button @click="submit('probForm')">审核不通过</el-button>
+      <el-button type="primary" @click="openAudit">立即审核</el-button>
+      <problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit"></problem-audit>
     </div>
     <div slot="footer" class="dialog-footer" v-else>
       <el-button @click="resetForm('probForm')" v-if="!form.FStatus && !form.fid">重置</el-button>
       <el-button type="primary" @click="submit('probForm')" v-if="!form.FStatus">保 存</el-button>
-      <el-button type="primary" @click="submitAudit" v-if="fid">提交审核</el-button>
+      <el-button type="primary" @click="submitAudit" v-if="fid && form.FStatus === 0">提交审核</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
 import mapSelect from './MapSelect.vue'
+import problemAudit from './ProblemAudit.vue'
 import {formatDate} from '../../assets/js/date.js'
 import _ from 'lodash'
 
 export default {
   components: {
+    problemAudit,
     mapSelect
   },
   computed: {
@@ -207,6 +213,14 @@ export default {
       return {
         Authorization: 'Bearer ' + this.$cookies.get('TZManage')
       }
+    },
+    auditData () {
+      let data = {
+        FBillTypeID: this.billTypeId,
+        FID: this.fid,
+        FCheckLevel: this.form.FCheckLevel
+      }
+      return JSON.stringify(data)
     }
   },
   data () {
@@ -215,12 +229,13 @@ export default {
       append: true,
       innerVisible: false,
       mapSelectShow: false,
+      dialogAuditShow: false,
       form: {
         isSubmited: false,
         fid: this.fid,
         billTypeId: this.billTypeId,
         billNo: '',
-        adcd: 331002,
+        adcd: '',
         edge: 1,
         town: '',
         year: '',
@@ -248,6 +263,7 @@ export default {
       adcdOptions: [],
       edgeOptions: [],
       proOptions: [],
+      auditList: [],
       rules: {
         adcd: [
           {type: 'number', required: true, message: '请选择行政区划', trigger: 'change'}
@@ -300,7 +316,6 @@ export default {
       return 'Bearer ' + this.$cookies.get('TZManage')
     },
     openMap () {
-      // this.$emit('selectMap', true)
       this.mapSelectShow = true
     },
     /**
@@ -388,9 +403,10 @@ export default {
      */
     getInfo () {
       let self = this
-      if (this.fid !== '') {
+      if (this.fid != '') {
         this.title = '问题详情'
         // this.getFilesUrl()
+        this.getAuditList()
         this.$axios.get('LoanApply/GetApplyInfo', {
           params: {
             FID: this.fid
@@ -398,6 +414,7 @@ export default {
         })
           .then(response => {
             let data = response.data
+            console.log(data)
             if (data.code === 1) {
               let obj = data.object
               self.form = {
@@ -420,6 +437,7 @@ export default {
                 FChangeStatusName: obj.FChangeStatusName,
                 FCheckLevel: obj.FCheckLevel
               }
+              self.getAttachTypeList()
             } else {
               self.$message({
                 message: data.message,
@@ -637,7 +655,7 @@ export default {
         .then(response => {
           let data = response.data
           if (data.code === 1) {
-            this.$message({
+            self.$message({
               message: '提交审核成功',
               type: 'success'
             })
@@ -653,6 +671,43 @@ export default {
           console.log(error)
           self.$message.error(error.message)
         })
+    },
+    openAudit () {
+      this.dialogAuditShow = true
+    },
+    closeAudit (msg) {
+      this.dialogAuditShow = false
+      if (msg) {
+        this.$emit('closeProAdd', false)
+      }
+    },
+    getAuditList () {
+      let self = this
+      this.$axios.get('LoanApply/GetCheckList', {
+        params: {
+          FLoanID: this.fid,
+          FBillTypeID: this.billTypeId
+        }
+      })
+        .then(response => {
+          let data = response.data
+          // console.log(data)
+          if (data.code === 1) {
+            self.auditList = [].concat(data.object)
+          } else {
+            self.$message({
+              message: data.message,
+              type: 'warning'
+            })
+          }
+        })
+        .catch(error => {
+          console.log(error)
+          self.$message.error(error.message)
+        })
+    },
+    formatDatetime (row, column, cellValue) {
+      return formatDate(new Date(cellValue), 'yyyy-MM-dd hh:mm:ss')
     }
   },
   props: ['fid', 'formShow', 'sposition', 'billTypeId'],
@@ -666,7 +721,7 @@ export default {
     formShow (curVal) {
       if (curVal === true) {
         this.getInfo()
-        this.getAttachTypeList()
+        // this.getAttachTypeList()
       } else {
         this.resetForm('probForm')
         Object.assign(this.$data.form, this.$options.data().form)
