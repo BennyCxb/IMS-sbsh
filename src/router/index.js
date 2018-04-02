@@ -30,41 +30,53 @@ export default new Router({
           component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
         },
         {
-          path: '/btable:fid-:sid-:tid-:btid',
-          component: resolve => require(['../components/page/BridgeTable.vue'], resolve)
+          path: '/dtable:fid-:sid-:tid-:btid',
+          component: resolve => require(['../components/page/DemoProjectTable.vue'], resolve)
         },
         {
-          path: '/btable:fid-:sid-:btid',
-          component: resolve => require(['../components/page/BridgeTable.vue'], resolve)
+          path: '/dtable:fid-:sid-:btid',
+          component: resolve => require(['../components/page/DemoProjectTable.vue'], resolve)
         },
         {
-          path: '/btable:fid-:btid',
-          component: resolve => require(['../components/page/BridgeTable.vue'], resolve)
-        },
-        {
-          path: '/rtable:fid-:sid-:tid-:btid',
-          component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
-        },
-        {
-          path: '/rtable:fid-:sid-:btid',
-          component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
-        },
-        {
-          path: '/rtable:fid-:btid',
-          component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
-        },
-        {
-          path: '/ctable:fid-:sid-:tid-:btid',
-          component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
-        },
-        {
-          path: '/ctable:fid-:sid-:btid',
-          component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
-        },
-        {
-          path: '/ctable:fid-:btid',
-          component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
+          path: '/dtable:fid-:btid',
+          component: resolve => require(['../components/page/DemoProjectTable.vue'], resolve)
         }
+        // {
+        //   path: '/btable:fid-:sid-:tid-:btid',
+        //   component: resolve => require(['../components/page/BridgeTable.vue'], resolve)
+        // },
+        // {
+        //   path: '/btable:fid-:sid-:btid',
+        //   component: resolve => require(['../components/page/BridgeTable.vue'], resolve)
+        // },
+        // {
+        //   path: '/btable:fid-:btid',
+        //   component: resolve => require(['../components/page/BridgeTable.vue'], resolve)
+        // },
+        // {
+        //   path: '/rtable:fid-:sid-:tid-:btid',
+        //   component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
+        // },
+        // {
+        //   path: '/rtable:fid-:sid-:btid',
+        //   component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
+        // },
+        // {
+        //   path: '/rtable:fid-:btid',
+        //   component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
+        // },
+        // {
+        //   path: '/ctable:fid-:sid-:tid-:btid',
+        //   component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
+        // },
+        // {
+        //   path: '/ctable:fid-:sid-:btid',
+        //   component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
+        // },
+        // {
+        //   path: '/ctable:fid-:btid',
+        //   component: resolve => require(['../components/page/ProblemTable.vue'], resolve)
+        // }
       ]
     },
     {
