@@ -179,12 +179,21 @@ export default {
         .then(function (response) {
           let data = response.data
           let adcdlist = []
-          _.each(data.object, (obj) => {
+          let FAgencyValue = localStorage.getItem('FAgencyValue')
+          if (FAgencyValue !== 'null') {
+            let item = _.find(data.object, {FValue: FAgencyValue})
             adcdlist.push({
-              value: obj.FValue,
-              label: obj.FName
+              value: Number(item.FValue),
+              label: item.FName
             })
-          })
+          } else {
+            _.each(data.object, (obj) => {
+              adcdlist.push({
+                value: Number(obj.FValue),
+                label: obj.FName
+              })
+            })
+          }
           self.adlist = [].concat(adcdlist)
         })
         .catch(function (error) {
