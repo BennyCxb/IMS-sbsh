@@ -113,6 +113,7 @@
               :file-list="files1.fileList"
               :beforeUpload="beforeAvatarUpload"
               :on-success="uploadSuccess"
+              :on-change="onFilesChange"
               accept="image/*"
               multiple>
               <i class="el-icon-plus"></i>
@@ -139,6 +140,7 @@
               :file-list="files2.fileList"
               :beforeUpload="beforeAvatarUpload"
               :on-success="uploadSuccess"
+              :on-change="onFilesChange"
               accept="image/*"
               multiple>
               <i class="el-icon-plus"></i>
@@ -225,10 +227,9 @@ export default {
     return {
       isEdit: false,
       title: '新增问题',
-      append: true,
-      innerVisible: false,
       mapSelectShow: false,
       dialogAuditShow: false,
+      filesChange: false,
       form: {
         isSubmited: false,
         fid: this.fid,
@@ -483,7 +484,7 @@ export default {
               FTwon: self.form.town,
               FRemark: self.form.remarks
             }
-            if (self.form.fid !== '') {
+            if (self.isEdit) {
               data.FID = self.form.fid
             }
             this.$axios.post('LoanApply/SaveSJApply', data)
@@ -493,6 +494,13 @@ export default {
                   self.form.fid = data.object
                   self.form.isSubmited = true
                   self.getAttachTypeList(self.form.fid, true)
+                  if (!self.filesChange) {
+                    self.$message({
+                      message: self.isEdit !== '' ? '修改成功' : '新增成功！',
+                      type: 'success'
+                    })
+                    self.$emit('closeProAdd', false)
+                  }
                 } else {
                   self.$message({
                     message: data.message,
@@ -592,6 +600,10 @@ export default {
           self.$message.error(error.message)
         })
     },
+    onFilesChange (file, fileList) {
+      console.log(1)
+      this.filesChange = true
+    },
     /**
      * 提交整改前照片
      */
@@ -605,7 +617,7 @@ export default {
       this.$refs.upload2.submit()
     },
     beforeAvatarUpload (file) {
-      console.log(file)
+      // console.log(file)
       var testmsg = file.type.substring(0, file.type.lastIndexOf('/') + 1)
       const extension = testmsg === 'image/'
       const isLt2M = file.size / 1024 / 1024 < 3
@@ -626,11 +638,12 @@ export default {
     uploadSuccess (response, file, fileLis) {
       let self = this
       let data = response
-      console.log(response)
+      // console.log(response)
       if (data.code === 1) {
         this.form.isSubmited = false
+        this.filesChange = false
         this.$message({
-          message: self.fid !== '' ? '修改成功' : '新增成功！',
+          message: self.isEdit !== '' ? '修改成功' : '新增成功！',
           type: 'success'
         })
         this.$emit('closeProAdd', false)
@@ -741,6 +754,7 @@ export default {
         Object.assign(this.$data.form, this.$options.data().form)
         Object.assign(this.$data.files1, this.$options.data().files1)
         Object.assign(this.$data.files2, this.$options.data().files2)
+        Object.assign(this.$data.filesChange, this.$options.data().filesChange)
       }
     },
     fid (curVal) {
