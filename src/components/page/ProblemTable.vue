@@ -330,7 +330,7 @@ export default {
           let data = response.data
           self.loading = false
           self.tableData = data.object
-          self.total = data.page.totalRecords
+          self.total = data.page ? data.page.totalRecords : 0
         })
         .catch(error => {
           console.log(error)
