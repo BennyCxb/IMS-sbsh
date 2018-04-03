@@ -2,7 +2,7 @@
   <el-dialog :title="title" :visible.sync="formShow" :before-close="handleClose" width="80%">
     <el-form :model="form"
              :rules="rules"
-             :disabled="form.FStatus !== 0 && !form.FChangeStatusName"
+             :disabled="isDisabled"
              ref="probForm"
              class="demo-form-inline demo-ruleForm">
       <el-row>
@@ -182,14 +182,14 @@
         </el-table-column>
       </el-table>
     </div>
-    <div slot="footer" class="dialog-footer" v-if="form.FStatus === 1">
-      <el-button type="primary" @click="openAudit">立即审核</el-button>
+    <div slot="footer" class="dialog-footer" v-cloak>
+      <el-button @click="handleClose">关 闭</el-button>
+      <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isEdit && !form.FStatus && isDisabled">编 辑</el-button>
+      <el-button @click="resetForm('probForm')" v-if="!isEdit && !form.FStatus && !isDisabled">重置</el-button>
+      <el-button type="primary" @click="submit('probForm')" v-if="!form.FStatus && !isDisabled">保 存</el-button>
+      <el-button type="primary" @click="submitAudit" v-if="isEdit && !form.FStatus && isDisabled">整改完成</el-button>
+      <el-button type="primary" @click="openAudit" v-if="isEdit && form.FStatus ===1 && isDisabled">立即审核</el-button>
       <problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>
-    </div>
-    <div slot="footer" class="dialog-footer" v-else>
-      <el-button @click="resetForm('probForm')" v-if="!form.FStatus && !isEdit">重置</el-button>
-      <el-button type="primary" @click="submit('probForm')" v-if="!form.FStatus">保 存</el-button>
-      <el-button type="primary" @click="submitAudit" v-if="fid && form.FStatus === 0">整改完成</el-button>
     </div>
   </el-dialog>
 </template>
@@ -226,6 +226,7 @@ export default {
   data () {
     return {
       isEdit: false,
+      isDisabled: false,
       title: '新增问题',
       mapSelectShow: false,
       dialogAuditShow: false,
@@ -247,7 +248,7 @@ export default {
         proType: 1,
         proDescribe: '',
         remarks: '',
-        FStatus: 0,
+        FStatus: 4,
         FChangeStatusName: 0,
         FCheckLevel: 0
       },
@@ -443,6 +444,9 @@ export default {
               FCheckLevel: obj.FCheckLevel
             }
             self.getAttachTypeList(obj.FID)
+            if (obj.FStatus !== 0) {
+              self.isDisabled = true
+            }
           } else {
             self.$message({
               message: data.message,
@@ -743,10 +747,13 @@ export default {
       if (curVal === true) {
         if (this.fid) {
           this.isEdit = true
+          this.isDisabled = true
           this.title = '问题详情'
           this.getInfo()
         } else {
           this.isEdit = false
+          this.isDisabled = false
+          this.form.FStatus = 0
           this.title = '新增问题'
         }
       } else {
