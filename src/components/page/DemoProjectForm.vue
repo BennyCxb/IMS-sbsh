@@ -141,43 +141,79 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="整改前照片" :label-width="formLabelWidth">
-            <el-upload
-              ref="upload1"
-              :action="url"
-              :headers="headers"
-              :auto-upload="false"
-              list-type="picture-card"
-              :on-preview="handlePictureCardPreview"
-              :data="files1.data"
-              :file-list="files1.fileList"
-              :beforeUpload="beforeAvatarUpload"
-              :on-success="uploadSuccess"
-              :on-change="onFilesChange"
-              accept="image/*"
-              multiple>
-              <i class="el-icon-plus"></i>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过3MB</div>
-            </el-upload>
-            <el-dialog :visible.sync="dialogVisible"
-                       append-to-body>
-              <img width="100%" :src="dialogImageUrl" alt="">
-            </el-dialog>
+          <el-form-item>
+            <h3>创建进度</h3>
+            <hr/>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="整改后照片" :label-width="formLabelWidth">
+      <!--<el-row>-->
+        <!--<el-col :span="12">-->
+          <!--<el-form-item label="已开工" :label-width="formLabelWidth">-->
+            <!--<el-upload-->
+              <!--class="upload-demo"-->
+              <!--drag-->
+              <!--ref="upload1"-->
+              <!--:action="url"-->
+              <!--:headers="headers"-->
+              <!--:auto-upload="false"-->
+              <!--:data="files1.data"-->
+              <!--:file-list="files1.fileList"-->
+              <!--:beforeUpload="beforeAvatarUpload"-->
+              <!--:on-success="uploadSuccess"-->
+              <!--:on-change="onFilesChange"-->
+              <!--multiple>-->
+              <!--<i class="el-icon-upload"></i>-->
+              <!--<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>-->
+            <!--</el-upload>-->
+            <!--<el-dialog :visible.sync="dialogVisible"-->
+                       <!--append-to-body>-->
+              <!--<img width="100%" :src="dialogImageUrl" alt="">-->
+            <!--</el-dialog>-->
+          <!--</el-form-item>-->
+        <!--</el-col>-->
+        <!--<el-col :span="12">-->
+          <!--<el-form-item label="情况说明" :label-width="formLabelWidth">-->
+            <!--<el-input v-model="form.FRemark"-->
+                      <!--type="textarea"-->
+                      <!--:rows="3"></el-input>-->
+          <!--</el-form-item>-->
+        <!--</el-col>-->
+        <!--<el-col :span="24">-->
+          <!--<el-form-item :label-width="formLabelWidth">-->
+          <!--<el-table-->
+            <!--:data="files1.fileList"-->
+            <!--style="width: 100%">-->
+            <!--<el-table-column-->
+              <!--prop="date"-->
+              <!--label="日期"-->
+              <!--width="180">-->
+            <!--</el-table-column>-->
+            <!--<el-table-column-->
+              <!--prop="name"-->
+              <!--label="文件名"-->
+              <!--width="280">-->
+            <!--</el-table-column>-->
+            <!--<el-table-column-->
+              <!--prop="address"-->
+              <!--label="操作">-->
+            <!--</el-table-column>-->
+          <!--</el-table>-->
+          <!--</el-form-item>-->
+        <!--</el-col>-->
+      <!--</el-row>-->
+      <el-row v-for="(item, i) in files" :key="i">
+        <el-col :span="24" v-if="item.type === 'img'">
+          <el-form-item :label="item.label" :label-width="formLabelWidth">
             <el-upload
-              ref="upload2"
+              :ref="'upload' + i"
               :action="url"
               :headers="headers"
               :auto-upload="false"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
-              :data="files2.data"
-              :file-list="files2.fileList"
+              :data="item.data"
+              :file-list="item.fileList"
               :beforeUpload="beforeAvatarUpload"
               :on-success="uploadSuccess"
               :on-change="onFilesChange"
@@ -190,6 +226,74 @@
                        append-to-body>
               <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
+            <hr/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24" v-else-if="item.type === 'file'">
+          <el-col :span="12">
+            <el-form-item :label="item.label" :label-width="formLabelWidth">
+              <el-upload
+                class="upload-demo"
+                drag
+                :ref="'upload' + i"
+                :action="url"
+                :headers="headers"
+                :auto-upload="false"
+                :data="item.data"
+                :on-success="uploadSuccess"
+                :on-change="onFilesChange"
+                multiple>
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+          <!--<el-col :span="12">-->
+            <!--<el-table-->
+              <!--:data="item.fileList"-->
+              <!--style="width: 100%">-->
+              <!--<el-table-column-->
+                <!--prop="name"-->
+                <!--label="文件名">-->
+              <!--</el-table-column>-->
+              <!--<el-table-column-->
+                <!--prop="address"-->
+                <!--label="操作"-->
+                <!--width="100">-->
+                <!--<template slot-scope="scope">-->
+                  <!--<el-button size="small"-->
+                             <!--:disabled="false"-->
+                             <!--@click="handleEdit(scope.$index, scope.row)">下载-->
+                  <!--</el-button>-->
+                <!--</template>-->
+              <!--</el-table-column>-->
+            <!--</el-table>-->
+          <!--</el-col>-->
+        </el-col>
+      </el-row>
+    </el-form>
+    <el-form>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item :label-width="formLabelWidth">
+            <el-table
+              :data="files[4].fileList"
+              style="width: 100%">
+              <el-table-column
+                prop="name"
+                label="文件名">
+              </el-table-column>
+              <el-table-column
+                prop="address"
+                label="操作"
+                width="180">
+                <template slot-scope="scope">
+                  <el-button size="small" icon="el-icon-download" title="下载"
+                             @click="download(scope.$index, scope.row)">
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
           </el-form-item>
         </el-col>
       </el-row>
@@ -263,14 +367,38 @@ export default {
         FSynopsis: '',
         FRemark: ''
       },
-      files1: {
-        data: {},
-        fileList: []
-      },
-      files2: {
-        data: {},
-        fileList: []
-      },
+      files: [
+        {
+          label: '创建（利用）前照片',
+          type: 'img',
+          data: {},
+          fileList: []
+        },
+        {
+          label: '创建（利用）规划设计效果图',
+          type: 'img',
+          data: {},
+          fileList: []
+        },
+        {
+          label: '创建（利用）中照片',
+          type: 'img',
+          data: {},
+          fileList: []
+        },
+        {
+          label: '创建（利用）后照片',
+          type: 'img',
+          data: {},
+          fileList: []
+        },
+        {
+          label: '创建报告（文件形式）',
+          type: 'file',
+          data: {},
+          fileList: []
+        }
+      ],
       formLabelWidth: '120px',
       adcdOptions: [],
       edgeOptions: [],
@@ -508,7 +636,7 @@ export default {
                 if (data.code === 1) {
                   self.form.FID = data.object
                   self.form.isSubmited = true
-                  self.getAttachTypeList(self.form.fid, true)
+                  self.getAttachTypeList(self.form.FID, true)
                   if (!self.filesChange) {
                     self.$message({
                       message: self.isEdit !== '' ? '修改成功' : '新增成功！',
@@ -533,8 +661,7 @@ export default {
           }
         })
       } else {
-        self.submitUpload1()
-        self.submitUpload2()
+        self.submitUpload()
       }
     },
     getAttachTypeList (FLoanID, isUpload) {
@@ -547,29 +674,37 @@ export default {
         .then(response => {
           let data = response.data
           if (data.code === 1) {
+            var switchFiles = (obj, index) => {
+              self.files[index].data.FLoanID = FLoanID
+              self.files[index].data.AttachType = obj.FID
+              self.files[index].data.FBillTypeID = Number(self.billTypeId)
+              if (!isUpload) {
+                self.files[index].fileList = []
+                self.getFilesUrl(self.files[index], obj.FID)
+              }
+            }
             _.each(data.object, obj => {
-              if (obj.FName === '整改前照片') {
-                self.files1.data.FLoanID = FLoanID
-                self.files1.data.AttachType = obj.FID
-                self.files1.data.FBillTypeID = Number(self.billTypeId)
-                if (isUpload) {
-                  self.submitUpload1()
-                } else {
-                  self.files1.fileList = []
-                  self.getFilesUrl(self.files1, obj.FID)
-                }
-              } else if (obj.FName === '整改后照片') {
-                self.files2.data.FLoanID = FLoanID
-                self.files2.data.AttachType = obj.FID
-                self.files2.data.FBillTypeID = Number(self.billTypeId)
-                if (isUpload) {
-                  self.submitUpload2()
-                } else {
-                  self.files2.fileList = []
-                  self.getFilesUrl(self.files2, obj.FID)
-                }
+              switch (obj.FName) {
+                case '创建（利用）前照片':
+                  switchFiles(obj, 0)
+                  break
+                case '创建（利用）规划设计效果图':
+                  switchFiles(obj, 1)
+                  break
+                case '创建（利用）中照片':
+                  switchFiles(obj, 2)
+                  break
+                case '创建（利用）后照片':
+                  switchFiles(obj, 3)
+                  break
+                case '创建报告（文件形式）':
+                  switchFiles(obj, 4)
+                  break
               }
             })
+            if (isUpload) {
+              self.submitUpload()
+            }
           } else {
             self.$message({
               message: data.message,
@@ -619,16 +754,15 @@ export default {
       this.filesChange = true
     },
     /**
-     * 提交整改前照片
+     * 提交照片/文件
      */
-    submitUpload1 () {
-      this.$refs.upload1.submit()
-    },
-    /**
-     * 提交整改后照片
-     */
-    submitUpload2 () {
-      this.$refs.upload2.submit()
+    submitUpload () {
+      console.log(this.$refs)
+      this.$refs.upload0[0].submit()
+      this.$refs.upload1[0].submit()
+      this.$refs.upload2[0].submit()
+      this.$refs.upload3[0].submit()
+      this.$refs.upload4[0].submit()
     },
     beforeAvatarUpload (file) {
       var testmsg = file.type.substring(0, file.type.lastIndexOf('/') + 1)
@@ -682,6 +816,15 @@ export default {
     },
     formatDatetime (row, column, cellValue) {
       return formatDate(new Date(cellValue), 'yyyy-MM-dd hh:mm:ss')
+    },
+    download (index, obj) {
+      let filename = obj.name.split('.')[0]
+      var $a = document.createElement('a')
+      $a.setAttribute('href', obj.url)
+      $a.setAttribute('download', filename)
+      var evObj = document.createEvent('MouseEvents')
+      evObj.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, true, false, 0, null)
+      $a.dispatchEvent(evObj)
     }
   },
   props: ['fid', 'formShow', 'sposition', 'billTypeId'],
@@ -705,8 +848,11 @@ export default {
       } else {
         this.resetForm('probForm')
         Object.assign(this.$data.form, this.$options.data().form)
-        Object.assign(this.$data.files1, this.$options.data().files1)
-        Object.assign(this.$data.files2, this.$options.data().files2)
+        Object.assign(this.$data.files[0], this.$options.data().files[0])
+        Object.assign(this.$data.files[1], this.$options.data().files[1])
+        Object.assign(this.$data.files[2], this.$options.data().files[2])
+        Object.assign(this.$data.files[3], this.$options.data().files[3])
+        Object.assign(this.$data.files[4], this.$options.data().files[4])
         Object.assign(this.$data.filesChange, this.$options.data().filesChange)
       }
     },
