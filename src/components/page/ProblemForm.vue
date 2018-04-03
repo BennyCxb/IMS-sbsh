@@ -153,35 +153,42 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row v-if="isEdit">
+        <el-col :span="24">
+          <el-form-item>
+          <h3>审核历史</h3>
+          <hr/>
+          </el-form-item>
+          <el-form-item :label-width="formLabelWidth">
+            <el-table
+              :data="auditList"
+              max-height="250"
+              style="width: 100%">
+              <el-table-column
+                prop="FAddTime"
+                label="日期"
+                width="180"
+                :formatter="formatDatetime">
+              </el-table-column>
+              <el-table-column
+                prop="FLevelName"
+                label="事件"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="FName"
+                label="操作用户"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="FRemark"
+                label="结果">
+              </el-table-column>
+            </el-table>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
-    <div v-if="fid != ''">
-      <hr/>
-      <el-table
-        :data="auditList"
-        max-height="250"
-        style="width: 100%">
-        <el-table-column
-          prop="FAddTime"
-          label="日期"
-          width="180"
-          :formatter="formatDatetime">
-        </el-table-column>
-        <el-table-column
-          prop="FLevelName"
-          label="事件"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="FName"
-          label="操作用户"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="FRemark"
-          label="结果">
-        </el-table-column>
-      </el-table>
-    </div>
     <div slot="footer" class="dialog-footer" v-cloak>
       <el-button @click="handleClose">关 闭</el-button>
       <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isEdit && !form.FStatus && isDisabled">编 辑</el-button>
