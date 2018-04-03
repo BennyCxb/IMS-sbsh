@@ -240,6 +240,7 @@
                 :headers="headers"
                 :auto-upload="false"
                 :data="item.data"
+                :show-file-list="false"
                 :on-success="uploadSuccess"
                 :on-change="onFilesChange"
                 multiple>
@@ -278,6 +279,7 @@
           <el-form-item :label-width="formLabelWidth">
             <el-table
               :data="files[4].fileList"
+              max-height="300"
               style="width: 100%">
               <el-table-column
                 prop="name"
