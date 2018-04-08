@@ -149,6 +149,7 @@
             <el-dialog :visible.sync="dialogVisible"
                        append-to-body>
               <img width="100%" :src="dialogImageUrl" alt="">
+              <div class="text-center"><a :href="dialogImageUrl" download target="_blank">下载</a></div>
             </el-dialog>
           </el-form-item>
         </el-col>
@@ -195,7 +196,7 @@
       <el-button @click="resetForm('probForm')" v-if="!isEdit && !form.FStatus && !isDisabled">重置</el-button>
       <el-button type="primary" @click="submit('probForm')" v-if="!form.FStatus && !isDisabled">保 存</el-button>
       <el-button type="primary" @click="submitAudit" v-if="isEdit && !form.FStatus && isDisabled">整改完成</el-button>
-      <el-button type="primary" @click="openAudit" v-if="isEdit && form.FStatus ===1 && isDisabled">立即审核</el-button>
+      <el-button type="primary" @click="openAudit" v-if="isEdit && form.FStatus === 1 && isDisabled">立即审核</el-button>
       <problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>
     </div>
   </el-dialog>
@@ -779,6 +780,15 @@ export default {
     },
     billTypeId (curVal) {
       this.form.billTypeId = curVal
+    },
+    download (index, obj) {
+      let filename = obj.name.split('.')[0]
+      var $a = document.createElement('a')
+      $a.setAttribute('href', obj.url)
+      $a.setAttribute('download', filename)
+      var evObj = document.createEvent('MouseEvents')
+      evObj.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, true, false, 0, null)
+      $a.dispatchEvent(evObj)
     }
   }
 }

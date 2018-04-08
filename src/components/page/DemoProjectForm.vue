@@ -56,7 +56,7 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="长度" :label-width="formLabelWidth" prop="FLength">
+          <el-form-item label="长度(km)" :label-width="formLabelWidth" prop="FLength">
             <el-input v-model="form.FLength" placeholder="请输入长度"></el-input>
           </el-form-item>
         </el-col>
@@ -108,8 +108,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="负责人" :label-width="formLabelWidth" prop="FLiablePerson">
-            <el-input v-model="form.FLiablePerson" placeholder="请输入负责人"></el-input>
+          <el-form-item label="联系人" :label-width="formLabelWidth" prop="FLiablePerson">
+            <el-input v-model="form.FLiablePerson" placeholder="请输入联系人"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -420,34 +420,34 @@ export default {
           {required: true, message: '请输入项目名称', trigger: 'blur'}
         ],
         FMileage: [
-          {required: true, message: '请输入里程桩号', trigger: 'blur'}
+          {required: false, message: '请输入里程桩号', trigger: 'blur'}
         ],
         FProjectTypeID: [
           {type: 'number', required: true, message: '请选择项目类型', trigger: 'change'}
         ],
         FInvestment: [
-          {required: true, message: '请输入投资金额', trigger: 'blur'}
+          {required: false, message: '请输入投资金额', trigger: 'blur'}
         ],
         FLength: [
-          {required: true, message: '请输入长度', trigger: 'blur'}
+          {required: false, message: '请输入长度', trigger: 'blur'}
         ],
         FPlanDate: [
           {required: true, message: '请选择完工时间', trigger: 'change'}
         ],
         FAcreage: [
-          {required: true, message: '请输入利用面积', trigger: 'blur'}
+          {required: false, message: '请输入利用面积', trigger: 'blur'}
         ],
         FPurpose: [
-          {required: true, message: '请输入用途', trigger: 'blur'}
+          {required: false, message: '请输入用途', trigger: 'blur'}
         ],
         FAccountabilityUnit: [
-          {required: true, message: '请输入负责单位', trigger: 'blur'}
+          {required: false, message: '请输入负责单位', trigger: 'blur'}
         ],
         FLiablePerson: [
-          {required: true, message: '请输入负责人', trigger: 'blur'}
+          {required: false, message: '请输入联系人', trigger: 'blur'}
         ],
         FMobile: [
-          {required: true, message: '请输入联系方式', trigger: 'blur'}
+          {required: false, message: '请输入联系方式', trigger: 'blur'}
         ],
         FSynopsis: [
           {required: true, message: '请输入项目简介', trigger: 'blur'}
@@ -759,7 +759,6 @@ export default {
      * 提交照片/文件
      */
     submitUpload () {
-      console.log(this.$refs)
       this.$refs.upload0[0].submit()
       this.$refs.upload1[0].submit()
       this.$refs.upload2[0].submit()

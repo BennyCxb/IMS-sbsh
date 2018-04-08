@@ -1,6 +1,7 @@
 <template>
   <div class="login-wrap">
-    <div class="ms-title">四边三化信息管理系统</div>
+    <div class="ms-title">“四边三化”信息管理系统</div>
+    <div class="ms-subtitle">Sibiansanhua Information Management System</div>
     <div class="ms-login">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
         <el-form-item prop="username">
@@ -90,9 +91,20 @@ export default {
     position: absolute;
     top: 50%;
     width: 100%;
-    margin-top: -230px;
+    margin-top: -260px;
     text-align: center;
-    font-size: 30px;
+    font-size: 34px;
+    color: #fff;
+
+  }
+
+  .ms-subtitle {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    margin-top: -210px;
+    text-align: center;
+    font-size: 18px;
     color: #fff;
 
   }
