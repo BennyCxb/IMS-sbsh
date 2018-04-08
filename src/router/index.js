@@ -10,12 +10,12 @@ export default new Router({
       redirect: '/login'
     },
     {
-      path: '/readme',
+      path: '/home',
       component: resolve => require(['../components/common/Home.vue'], resolve),
       children: [
         {
           path: '/',
-          component: resolve => require(['../components/page/Readme.vue'], resolve)
+          component: resolve => require(['../components/page/Home.vue'], resolve)
         },
         {
           path: '/ptable:fid-:sid-:tid-:btid',
@@ -40,6 +40,10 @@ export default new Router({
         {
           path: '/dtable:fid-:btid',
           component: resolve => require(['../components/page/DemoProjectTable.vue'], resolve)
+        },
+        {
+          path: '/null:fid-:btid',
+          component: resolve => require(['../components/page/notfound.vue'], resolve)
         }
         // {
         //   path: '/btable:fid-:sid-:tid-:btid',

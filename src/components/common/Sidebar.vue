@@ -178,9 +178,9 @@ export default {
         // console.log(items1)
         self.items = [{
           icon: 'el-icon-setting',
-          index: 'readme',
+          index: 'home',
           title: '首页',
-          url: 'readme'
+          url: 'home'
         }].concat(items1)
       })
       .catch(function (error) {
