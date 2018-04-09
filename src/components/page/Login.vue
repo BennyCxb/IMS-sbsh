@@ -61,7 +61,7 @@ export default {
           if (data.code === 1) {
             self.$cookies.set('TZManage', data.object, {expires: 12})
             localStorage.setItem('ms_username', self.ruleForm.username)
-            self.$router.push('/readme')
+            self.$router.push('/home')
           } else {
             self.$alert(data.message, '温馨提示', {
               confirmButtonText: '确定'

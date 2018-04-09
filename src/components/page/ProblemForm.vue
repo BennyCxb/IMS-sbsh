@@ -192,11 +192,11 @@
     </el-form>
     <div slot="footer" class="dialog-footer" v-cloak>
       <el-button @click="handleClose">关 闭</el-button>
-      <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isEdit && !form.FStatus && isDisabled">编 辑</el-button>
+      <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isEdit && submitPossession && isDisabled">编 辑</el-button>
       <el-button @click="resetForm('probForm')" v-if="!isEdit && !form.FStatus && !isDisabled">重置</el-button>
       <el-button type="primary" @click="submit('probForm')" v-if="!form.FStatus && !isDisabled">保 存</el-button>
-      <el-button type="primary" @click="submitAudit" v-if="isEdit && !form.FStatus && isDisabled">整改完成</el-button>
-      <el-button type="primary" @click="openAudit" v-if="isEdit && form.FStatus === 1 && isDisabled">立即审核</el-button>
+      <el-button type="primary" @click="submitAudit" v-if="isEdit && submitPossession && isDisabled">整改完成</el-button>
+      <el-button type="primary" @click="openAudit" v-if="isEdit && auditPossession && isDisabled">立即审核</el-button>
       <problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>
     </div>
   </el-dialog>
@@ -239,6 +239,8 @@ export default {
       mapSelectShow: false,
       dialogAuditShow: false,
       filesChange: false,
+      submitPossession: false,
+      auditPossession: false,
       form: {
         isSubmited: false,
         fid: this.fid,
@@ -455,6 +457,8 @@ export default {
             if (obj.FStatus !== 0) {
               self.isDisabled = true
             }
+            self.getSubmitPossession()
+            self.getAuditPossession()
           } else {
             self.$message({
               message: data.message,
@@ -613,7 +617,6 @@ export default {
         })
     },
     onFilesChange (file, fileList) {
-      console.log(1)
       this.filesChange = true
     },
     /**
@@ -742,6 +745,51 @@ export default {
     },
     formatDatetime (row, column, cellValue) {
       return formatDate(new Date(cellValue), 'yyyy-MM-dd hh:mm:ss')
+    },
+    // 编辑、提交整改权限
+    getSubmitPossession () {
+      let FLevel = Number(localStorage.getItem('FLevel'))
+      let blist = JSON.parse(sessionStorage.getItem('breadcrumb'))
+      let binx = _.indexOf(blist, '县级自查自纠点位')
+      if (FLevel === 1) {
+        if (this.form.FStatus === 0) {
+          this.submitPossession = true
+        } else {
+          this.submitPossession = false
+        }
+      } else if (FLevel === 3 && binx === -1 && this.form.FStatus === 0) {
+        this.submitPossession = true
+      } else if (FLevel === 4 && binx > -1 && this.form.FStatus === 0) {
+        this.submitPossession = true
+      } else {
+        this.submitPossession = false
+      }
+    },
+    // 审核整改权限
+    getAuditPossession () {
+      let FLevel = Number(localStorage.getItem('FLevel'))
+      let blist = JSON.parse(sessionStorage.getItem('breadcrumb'))
+      let binx = _.indexOf(blist, '县级自查自纠点位')
+      if (FLevel === 1 || FLevel === 2) {
+        if (this.form.FStatus === 1) {
+          this.auditPossession = true
+        } else {
+          this.auditPossession = false
+        }
+      } else if (binx > -1 && this.form.FStatus === 1 && FLevel === 3) {
+        this.auditPossession = true
+      } else {
+        this.auditPossession = false
+      }
+    },
+    download (index, obj) {
+      let filename = obj.name.split('.')[0]
+      var $a = document.createElement('a')
+      $a.setAttribute('href', obj.url)
+      $a.setAttribute('download', filename)
+      var evObj = document.createEvent('MouseEvents')
+      evObj.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, true, false, 0, null)
+      $a.dispatchEvent(evObj)
     }
   },
   props: ['fid', 'formShow', 'sposition', 'billTypeId'],
@@ -780,15 +828,6 @@ export default {
     },
     billTypeId (curVal) {
       this.form.billTypeId = curVal
-    },
-    download (index, obj) {
-      let filename = obj.name.split('.')[0]
-      var $a = document.createElement('a')
-      $a.setAttribute('href', obj.url)
-      $a.setAttribute('download', filename)
-      var evObj = document.createEvent('MouseEvents')
-      evObj.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, true, false, 0, null)
-      $a.dispatchEvent(evObj)
     }
   }
 }
