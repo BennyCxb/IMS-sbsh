@@ -641,7 +641,7 @@ export default {
                   self.getAttachTypeList(self.form.FID, true)
                   if (!self.filesChange) {
                     self.$message({
-                      message: self.isEdit !== '' ? '修改成功' : '新增成功！',
+                      message: self.isEdit ? '修改成功' : '新增成功！',
                       type: 'success'
                     })
                     self.$emit('closeProAdd', false)

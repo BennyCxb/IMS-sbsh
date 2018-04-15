@@ -658,7 +658,7 @@ export default {
         this.form.isSubmited = false
         this.filesChange = false
         this.$message({
-          message: self.isEdit !== '' ? '修改成功' : '新增成功！',
+          message: self.isEdit ? '修改成功' : '新增成功！',
           type: 'success'
         })
         this.$emit('closeProAdd', false)
