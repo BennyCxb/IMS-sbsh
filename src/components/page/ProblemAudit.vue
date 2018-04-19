@@ -52,6 +52,8 @@ export default {
         } else {
           this.isReturn = false
         }
+      } else {
+        Object.assign(this.$data.form, this.$options.data().form)
       }
     }
   },
