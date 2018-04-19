@@ -1,6 +1,15 @@
 <template>
   <el-dialog title="审核信息" :visible.sync="dialogAudit" :before-close="handleClose" width="60%" append-to-body>
-    <el-form :model="form" ref="auditForm">
+    <el-form :model="form" ref="auditForm" v-if="isReturn">
+      <el-form-item label="退回理由" :label-width="formLabelWidth" prop="FlowMessage">
+        <el-input v-model="form.FlowMessage"
+                  type="textarea"
+                  :rows="3"
+                  :rules="[{ required: true, message: '退回意见不能为空'}]"
+                  placeholder="请输入退回理由"></el-input>
+      </el-form-item>
+    </el-form>
+    <el-form :model="form" ref="auditForm" v-else>
       <el-form-item label="审核意见" :label-width="formLabelWidth" prop="FlowMessage">
         <el-input v-model="form.FlowMessage"
                   type="textarea"
@@ -9,7 +18,10 @@
                   placeholder="审核通过可不填，若审核不通过则必填"></el-input>
       </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer">
+    <div slot="footer" class="dialog-footer" v-if="isReturn">
+      <el-button type="danger" @click="auditReject">退回</el-button>
+    </div>
+    <div slot="footer" class="dialog-footer" v-else>
       <el-button type="danger" @click="auditReject">审核不通过</el-button>
       <el-button type="primary" @click="AuditPass">审核通过</el-button>
     </div>
@@ -17,13 +29,30 @@
 </template>
 
 <script>
+import _ from 'lodash'
 export default {
   data () {
     return {
+      isReturn: false,
       form: {
         FlowMessage: ''
       },
       formLabelWidth: '120px'
+    }
+  },
+  watch: {
+    dialogAudit (curVul) {
+      if (curVul) {
+        let FLevel = Number(localStorage.getItem('FLevel'))
+        let blist = JSON.parse(sessionStorage.getItem('breadcrumb'))
+        let FStatus = JSON.parse(this.auditData).FStatus
+        let binx = _.indexOf(blist, '县级自查自纠点位')
+        if (binx > -1 && FStatus === 2 && (FLevel === 1 || FLevel === 2)) {
+          this.isReturn = true
+        } else {
+          this.isReturn = false
+        }
+      }
     }
   },
   methods: {
@@ -38,7 +67,7 @@ export default {
     AuditPass () {
       let self = this
       let data = JSON.parse(this.auditData)
-      this.$axios.post('Flow/AdoptSJApply', {
+      this.$axios.post('Flow/AdoptApply', {
         FBillTypeID: data.FBillTypeID,
         FID: data.FID,
         FCurrentLevel: data.FCheckLevel,
@@ -76,7 +105,7 @@ export default {
             })
             return false
           }
-          this.$axios.post('Flow/RejectSJApply', {
+          this.$axios.post('Flow/RejectApply', {
             FBillTypeID: data.FBillTypeID,
             FID: data.FID,
             FCurrentLevel: data.FCheckLevel,
@@ -86,7 +115,7 @@ export default {
               let data = response.data
               if (data.code === 1) {
                 self.$message({
-                  message: '审核不通过',
+                  message: '操作成功',
                   type: 'success'
                 })
                 self.probClose(true)

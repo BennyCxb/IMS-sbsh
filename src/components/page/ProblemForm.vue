@@ -226,7 +226,8 @@ export default {
       let data = {
         FBillTypeID: this.billTypeId,
         FID: this.fid,
-        FCheckLevel: this.form.FCheckLevel
+        FCheckLevel: this.form.FCheckLevel,
+        FStatus: this.form.FStatus
       }
       return JSON.stringify(data)
     }
@@ -770,8 +771,11 @@ export default {
       let FLevel = Number(localStorage.getItem('FLevel'))
       let blist = JSON.parse(sessionStorage.getItem('breadcrumb'))
       let binx = _.indexOf(blist, '县级自查自纠点位')
+      console.log(1)
       if (FLevel === 1 || FLevel === 2) {
         if (this.form.FStatus === 1) {
+          this.auditPossession = true
+        } else if (binx > -1 && this.form.FStatus === 2) {
           this.auditPossession = true
         } else {
           this.auditPossession = false
