@@ -53,7 +53,8 @@ export default {
       // })
       this.$axios.post('Login/GetUserInfo', {
         UserName: self.ruleForm.username,
-        UserPwd: self.ruleForm.password
+        UserPwd: self.ruleForm.password,
+        FProject: 1
       })
         .then(function (response) {
           let data = response.data

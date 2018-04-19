@@ -38,7 +38,7 @@ export default {
     AuditPass () {
       let self = this
       let data = JSON.parse(this.auditData)
-      this.$axios.post('LoanApply/AdoptSJApply', {
+      this.$axios.post('Flow/AdoptSJApply', {
         FBillTypeID: data.FBillTypeID,
         FID: data.FID,
         FCurrentLevel: data.FCheckLevel,
@@ -76,7 +76,7 @@ export default {
             })
             return false
           }
-          this.$axios.post('LoanApply/RejectSJApply', {
+          this.$axios.post('Flow/RejectSJApply', {
             FBillTypeID: data.FBillTypeID,
             FID: data.FID,
             FCurrentLevel: data.FCheckLevel,

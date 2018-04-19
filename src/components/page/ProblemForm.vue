@@ -684,7 +684,7 @@ export default {
     },
     submitAudit () {
       let self = this
-      this.$axios.post('LoanApply/SubmitSJApply', {
+      this.$axios.post('Flow/SubmitApply', {
         FBillTypeID: self.billTypeId,
         FID: self.form.fid
       })
@@ -692,7 +692,7 @@ export default {
           let data = response.data
           if (data.code === 1) {
             self.$message({
-              message: '提交审核成功',
+              message: '提交整改成功',
               type: 'success'
             })
             this.$emit('closeProAdd', false)
@@ -720,7 +720,7 @@ export default {
     },
     getAuditList () {
       let self = this
-      this.$axios.get('LoanApply/GetCheckList', {
+      this.$axios.get('Flow/GetCheckList', {
         params: {
           FLoanID: this.fid,
           FBillTypeID: this.billTypeId
