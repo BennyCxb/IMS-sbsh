@@ -12,6 +12,8 @@ import VueLodash from 'vue-lodash'
 import VueCookies from 'vue-cookies'
 // 引入vue-amap
 import VueAMap from 'vue-amap'
+// 引入config.js
+import config from '../dist/config.js'
 // 引入lodash
 // import lodash from 'lodash'
 Vue.use(ElementUI)
@@ -29,8 +31,7 @@ VueAMap.initAMapApiLoader({
 })
 /* eslint-disable no-new */
 Vue.prototype.$axios = axios
-// Vue.prototype.$axios.defaults.baseURL = 'http://localhost:8088/api/';
-Vue.prototype.$axios.defaults.baseURL = 'http://tzsgyc.iok.la:47521/api/'
+Vue.prototype.$axios.defaults.baseURL = config.rootHost()
 // 添加请求拦截器
 const self = Vue.prototype
 Vue.prototype.$axios.interceptors.request.use(function (config) {
