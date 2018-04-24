@@ -3,7 +3,8 @@
 }
 .login-wrap{
     /*background: #324157;*/
-  background-image: url("../../src/assets/bg.jpg");
+  background: url(../../src/assets/bg.jpg)no-repeat;
+  background-size: cover;
 }
 .plugins-tips{
     background: #eef1f6;

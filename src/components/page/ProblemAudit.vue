@@ -1,6 +1,6 @@
 <template>
   <el-dialog title="审核信息" :visible.sync="dialogAudit" :before-close="handleClose" width="60%" append-to-body>
-    <el-form :model="form" ref="auditForm" v-if="isReturn">
+    <el-form :model="form" ref="auditForm" size="small" v-if="isReturn">
       <el-form-item label="退回理由" :label-width="formLabelWidth" prop="FlowMessage">
         <el-input v-model="form.FlowMessage"
                   type="textarea"

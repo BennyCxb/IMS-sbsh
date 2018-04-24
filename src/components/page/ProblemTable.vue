@@ -51,8 +51,8 @@
       <vProblemForm :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow" @closeProAdd="closePro"></vProblemForm>
     </div>
     <el-table v-loading="loading" :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange"
-              stripe>
-      <el-table-column type="selection" width="55"></el-table-column>
+              stripe size="mini">
+      <!--<el-table-column type="selection" width="55"></el-table-column>-->
       <el-table-column prop="FAgencyName" label="行政区划">
       </el-table-column>
       <el-table-column prop="FBillNo" label="问题编号" sortable>
@@ -79,6 +79,15 @@
       </el-table-column>
     </el-table>
     <div class="pagination">
+      <el-select v-model="pageSize" class="handle-select" style="float: left" size="mini"
+                 placeholder="显示行数" @change="search">
+        <el-option
+          v-for="item in rowOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
       <el-pagination
         @current-change="handleCurrentChange"
         layout="prev, pager, next"
@@ -134,7 +143,21 @@ export default {
       cstaOptions: [],
       proAddShow: false,
       breadcrumb: [],
-      loading: true
+      loading: true,
+      rowOptions: [
+        {
+          label: '每页10行',
+          value: 10
+        },
+        {
+          label: '每页15行',
+          value: 15
+        },
+        {
+          label: '每页20行',
+          value: 20
+        }
+      ]
     }
   },
   created () {

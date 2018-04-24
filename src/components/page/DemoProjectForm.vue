@@ -4,9 +4,10 @@
              :rules="rules"
              :disabled="isDisabled"
              ref="probForm"
+             size="small"
              class="demo-form-inline demo-ruleForm">
       <el-row>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="年度月份" :label-width="formLabelWidth" prop="FMonth">
             <el-date-picker
               v-model="form.FMonth"
@@ -15,14 +16,12 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="项目名称" :label-width="formLabelWidth" prop="FPorjectName">
             <el-input v-model="form.FPorjectName" placeholder="请输入项目名称"></el-input>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="行政区划" :label-width="formLabelWidth" prop="FAgencyValue">
             <el-select v-model="form.FAgencyValue">
               <el-option
@@ -34,33 +33,32 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="乡镇街道" :label-width="formLabelWidth" prop="FTwon">
             <el-input v-model="form.FTwon" placeholder="请输入乡镇街道"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="里程桩号" :label-width="formLabelWidth" prop="FMileage">
-            <el-input v-model="form.FMileage" placeholder="里程桩号"></el-input>
+            <el-input v-model="form.FMileage"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="定位信息" :label-width="formLabelWidth" prop="FGPS">
-            <el-input v-model="form.FGPS" @focus="openMap"
-                      placeholder="点击选择定位"></el-input>
+            <el-input v-model="form.FGPS" @focus="openMap" prefix-icon="el-icon-location" placeholder="点击选择定位"></el-input>
           </el-form-item>
           <mapSelect :mapShow="mapSelectShow" @selectMap="closeMap" @selectPosition="setPosition"></mapSelect>
         </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="长度(km)" :label-width="formLabelWidth" prop="FLength">
-            <el-input v-model="form.FLength" placeholder="请输入长度"></el-input>
+        <el-col :span="6">
+          <el-form-item label="长度" :label-width="formLabelWidth" prop="FLength">
+            <el-input v-model="form.FLength">
+              <template slot="suffix">km</template>
+            </el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="项目类型" :label-width="formLabelWidth" prop="FProjectTypeID">
             <el-select v-model="form.FProjectTypeID" placeholder="请选择项目类型">
               <el-option
@@ -74,54 +72,54 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="投资金额" :label-width="formLabelWidth" prop="FInvestment">
-            <el-input v-model="form.FInvestment" placeholder="请输入投资金额"></el-input>
+            <el-input v-model="form.FInvestment">
+              <template slot="suffix">万元</template>
+            </el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="6">
+          <el-form-item label="利用面积" :label-width="formLabelWidth" prop="FAcreage">
+            <el-input v-model.number="form.FAcreage">
+              <template slot="suffix">㎡</template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="用途" :label-width="formLabelWidth" prop="FPurpose">
+            <el-input v-model="form.FPurpose"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
           <el-form-item label="计划完工时间" :label-width="formLabelWidth" prop="FPlanDate">
             <el-date-picker
               v-model="form.FPlanDate"
               type="date"
-              placeholder="选择日期">
+              placeholder="请选择日期">
             </el-date-picker>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="12">
-          <el-form-item label="利用面积(m²)" :label-width="formLabelWidth" prop="FAcreage">
-            <el-input v-model="form.FAcreage" placeholder="请输入利用面积"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="用途" :label-width="formLabelWidth" prop="FPurpose">
-            <el-input v-model="form.FPurpose" placeholder="请输入用途"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="负责单位" :label-width="formLabelWidth" prop="FAccountabilityUnit">
-            <el-input v-model="form.FAccountabilityUnit" placeholder="请输入负责单位"></el-input>
+            <el-input v-model="form.FAccountabilityUnit"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="联系人" :label-width="formLabelWidth" prop="FLiablePerson">
-            <el-input v-model="form.FLiablePerson" placeholder="请输入联系人"></el-input>
+            <el-input v-model="form.FLiablePerson"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="联系方式" :label-width="formLabelWidth" prop="FMobile">
+            <el-input v-model="form.FMobile"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="联系方式" :label-width="formLabelWidth" prop="FMobile">
-            <el-input v-model="form.FMobile" placeholder="请输入联系方式"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
           <el-form-item label="项目简介" :label-width="formLabelWidth" prop="FSynopsis">
             <el-input v-model="form.FSynopsis"
                       type="textarea"
@@ -129,9 +127,7 @@
                       placeholder="请输入项目简介"></el-input>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
+        <el-col :span="12">
           <el-form-item label="备注" :label-width="formLabelWidth" prop="FRemark">
             <el-input v-model="form.FRemark"
                       type="textarea"
@@ -147,61 +143,6 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <!--<el-row>-->
-        <!--<el-col :span="12">-->
-          <!--<el-form-item label="已开工" :label-width="formLabelWidth">-->
-            <!--<el-upload-->
-              <!--class="upload-demo"-->
-              <!--drag-->
-              <!--ref="upload1"-->
-              <!--:action="url"-->
-              <!--:headers="headers"-->
-              <!--:auto-upload="false"-->
-              <!--:data="files1.data"-->
-              <!--:file-list="files1.fileList"-->
-              <!--:beforeUpload="beforeAvatarUpload"-->
-              <!--:on-success="uploadSuccess"-->
-              <!--:on-change="onFilesChange"-->
-              <!--multiple>-->
-              <!--<i class="el-icon-upload"></i>-->
-              <!--<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>-->
-            <!--</el-upload>-->
-            <!--<el-dialog :visible.sync="dialogVisible"-->
-                       <!--append-to-body>-->
-              <!--<img width="100%" :src="dialogImageUrl" alt="">-->
-            <!--</el-dialog>-->
-          <!--</el-form-item>-->
-        <!--</el-col>-->
-        <!--<el-col :span="12">-->
-          <!--<el-form-item label="情况说明" :label-width="formLabelWidth">-->
-            <!--<el-input v-model="form.FRemark"-->
-                      <!--type="textarea"-->
-                      <!--:rows="3"></el-input>-->
-          <!--</el-form-item>-->
-        <!--</el-col>-->
-        <!--<el-col :span="24">-->
-          <!--<el-form-item :label-width="formLabelWidth">-->
-          <!--<el-table-->
-            <!--:data="files1.fileList"-->
-            <!--style="width: 100%">-->
-            <!--<el-table-column-->
-              <!--prop="date"-->
-              <!--label="日期"-->
-              <!--width="180">-->
-            <!--</el-table-column>-->
-            <!--<el-table-column-->
-              <!--prop="name"-->
-              <!--label="文件名"-->
-              <!--width="280">-->
-            <!--</el-table-column>-->
-            <!--<el-table-column-->
-              <!--prop="address"-->
-              <!--label="操作">-->
-            <!--</el-table-column>-->
-          <!--</el-table>-->
-          <!--</el-form-item>-->
-        <!--</el-col>-->
-      <!--</el-row>-->
       <el-row v-for="(item, i) in files" :key="i">
         <el-col :span="24" v-if="item.type === 'img'">
           <el-form-item :label="item.label" :label-width="formLabelWidth">
@@ -249,27 +190,6 @@
               </el-upload>
             </el-form-item>
           </el-col>
-          <!--<el-col :span="12">-->
-            <!--<el-table-->
-              <!--:data="item.fileList"-->
-              <!--style="width: 100%">-->
-              <!--<el-table-column-->
-                <!--prop="name"-->
-                <!--label="文件名">-->
-              <!--</el-table-column>-->
-              <!--<el-table-column-->
-                <!--prop="address"-->
-                <!--label="操作"-->
-                <!--width="100">-->
-                <!--<template slot-scope="scope">-->
-                  <!--<el-button size="small"-->
-                             <!--:disabled="false"-->
-                             <!--@click="handleEdit(scope.$index, scope.row)">下载-->
-                  <!--</el-button>-->
-                <!--</template>-->
-              <!--</el-table-column>-->
-            <!--</el-table>-->
-          <!--</el-col>-->
         </el-col>
       </el-row>
     </el-form>
@@ -280,6 +200,7 @@
             <el-table
               :data="files[4].fileList"
               max-height="300"
+              size="mini"
               style="width: 100%">
               <el-table-column
                 prop="name"
@@ -302,6 +223,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="handleClose">关 闭</el-button>
+      <el-button @click="reload" v-if="!isDisabled">取消编辑</el-button>
       <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isDisabled">编 辑</el-button>
       <el-button @click="resetForm('probForm')" v-if="!form.FStatus && !isEdit && !isDisabled">重置</el-button>
       <el-button type="primary" @click="submit('probForm')" v-if="!form.FStatus && !isDisabled">保 存</el-button>
@@ -422,6 +344,9 @@ export default {
         FMileage: [
           {required: false, message: '请输入里程桩号', trigger: 'blur'}
         ],
+        FGPS: [
+          {required: false, trigger: 'blur'}
+        ],
         FProjectTypeID: [
           {type: 'number', required: true, message: '请选择项目类型', trigger: 'change'}
         ],
@@ -435,7 +360,7 @@ export default {
           {required: true, message: '请选择完工时间', trigger: 'change'}
         ],
         FAcreage: [
-          {required: false, message: '请输入利用面积', trigger: 'blur'}
+          {required: false, trigger: 'blur'}
         ],
         FPurpose: [
           {required: false, message: '请输入用途', trigger: 'blur'}
@@ -461,6 +386,11 @@ export default {
     }
   },
   methods: {
+    reload () {
+      this.isDisabled = true
+      this.title = '项目详情'
+      this.getInfo()
+    },
     handleClose () {
       this.$confirm('确认关闭？')
         .then(_ => {
@@ -869,3 +799,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .handle-select {
+    width: 120px;
+  }
+</style>

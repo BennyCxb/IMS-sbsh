@@ -1,10 +1,10 @@
 <template>
   <div class="header">
-    <div class="logo">四边三化信息管理系统</div>
+    <div class="logo">“四边三化”信息管理</div>
     <div class="user-info">
       <el-dropdown trigger="click" @command="handleCommand">
                 <span class="el-dropdown-link">
-                    <img class="user-logo" src="../../../static/img/img.jpg">
+                    <img class="user-logo" src="../../assets/headimg.png">
                     {{name}}
                 </span>
         <el-dropdown-menu slot="dropdown">
@@ -18,7 +18,7 @@
 export default {
   data () {
     return {
-      name: ''
+      name: '未知用户'
     }
   },
   // computed: {
@@ -114,6 +114,7 @@ export default {
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    background: #fff;
   }
 
   .el-dropdown-menu__item {
