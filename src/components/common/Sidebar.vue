@@ -57,6 +57,7 @@
       </template>
       <!--一级菜单-->
     </el-menu>
+    <div class="sidebar-bottom"><p>浙ICP备18015187号-1</p><p>© 2018</p></div>
   </div>
 </template>
 
@@ -203,6 +204,17 @@ export default {
   }
 
   .sidebar > ul {
-    height: 100%;
+    height: calc(100% - 55px);
+  }
+
+  .sidebar-bottom {
+    position: relative;
+    margin: 0;
+    padding: 10px;
+    border-right: solid 1px #e6e6e6;
+    text-align: center;
+    font-size: 14px;
+    color: #ffffff;
+    background: rgb(48, 49, 51);
   }
 </style>

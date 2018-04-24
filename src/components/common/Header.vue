@@ -1,6 +1,8 @@
 <template>
   <div class="header">
-    <div class="logo">“四边三化”信息管理</div>
+    <div class="logo">
+      <img src="../../assets/logo-sbsh.png" alt="">
+    </div>
     <div class="user-info">
       <el-dropdown trigger="click" @command="handleCommand">
                 <span class="el-dropdown-link">
@@ -89,6 +91,10 @@ export default {
     float: left;
     width: 250px;
     text-align: center;
+  }
+
+  .header .logo > img {
+    height: 70px;
   }
 
   .user-info {

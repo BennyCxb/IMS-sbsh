@@ -1,5 +1,10 @@
 <template>
   <div class="login-wrap">
+    <div class="back-index" title="返回首页">
+      <a href="http://www.tzsgyc.com/">
+        <img src="../../assets/logo-2.png" alt="">
+      </a>
+    </div>
     <div class="ms-title">“四边三化”信息管理系统</div>
     <div class="ms-subtitle">Sibiansanhua Information Management System</div>
     <div class="ms-login">
@@ -86,6 +91,19 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
+  }
+
+  .back-index {
+    padding: 20px;
+  }
+
+  .back-index a {
+    color: #fff;
+    font-size: 20px;
+  }
+
+  .back-index a > img {
+    height: 100px;
   }
 
   .ms-title {
