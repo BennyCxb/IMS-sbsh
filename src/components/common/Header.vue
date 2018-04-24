@@ -46,7 +46,7 @@ export default {
             }
           })
           .catch(function (error) {
-            console.log(error)
+            // console.log(error)
             self.$message.error(error.message)
           })
       }
@@ -56,7 +56,7 @@ export default {
       this.$axios.get('Login/IsLogin')
         .then(function (response) {
           let data = response.data
-          console.log(data)
+          // console.log(data)
           if (data.code === 1) {
             self.name = data.object.UserName
             localStorage.setItem('FLevel', data.object.FLevel)
@@ -66,7 +66,7 @@ export default {
           }
         })
         .catch(function (error) {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     }

@@ -62,7 +62,7 @@ export default {
       this.$emit('closeAudit', false)
     },
     probClose (msg) {
-      console.log(msg)
+      // console.log(msg)
       this.$emit('closeAudit', msg)
       this.$emit('closePro', false)
     },
@@ -91,7 +91,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -129,7 +129,7 @@ export default {
               }
             })
             .catch(error => {
-              console.log(error)
+              // console.log(error)
               self.$message.error(error.message)
             })
         } else {

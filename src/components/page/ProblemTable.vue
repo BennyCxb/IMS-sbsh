@@ -220,7 +220,7 @@ export default {
           self.adlist = [].concat(adcdlist)
         })
         .catch(function (error) {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -246,7 +246,7 @@ export default {
           self.edgeOptions = [].concat(list)
         })
         .catch(function (error) {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -272,7 +272,7 @@ export default {
           self.staOptions = [].concat(list)
         })
         .catch(function (error) {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -298,7 +298,7 @@ export default {
           self.cstaOptions = [].concat(list)
         })
         .catch(function (error) {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -324,7 +324,7 @@ export default {
           self.proOptions = [].concat(list)
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -356,7 +356,7 @@ export default {
           self.total = data.page ? data.page.totalRecords : 0
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.loading = false
           self.$message.error(error.message)
         })
@@ -394,14 +394,14 @@ export default {
               self.getData()
             })
             .catch(function (error) {
-              console.log(error)
+              // console.log(error)
               self.$alert(error.message, '温馨提示', {
                 confirmButtonText: '确定'
               })
             })
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -432,8 +432,8 @@ export default {
   },
   watch: {
     '$route' (to, from) {
-      console.log(to)
-      console.log(from)
+      // console.log(to)
+      // console.log(from)
       this.getStatus(this.$route.path)
       this.getBillTypeId()
       this.getBreadcrumb()

@@ -185,7 +185,7 @@ export default {
         }].concat(items1)
       })
       .catch(function (error) {
-        console.log(error)
+        // console.log(error)
         self.$message.error(error.message)
       })
   }

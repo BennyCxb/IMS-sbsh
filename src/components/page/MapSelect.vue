@@ -104,10 +104,10 @@ export default {
       this.$emit('selectMap', false)
     },
     done () {
-      console.log({
-        lng: this.lng,
-        lat: this.lat
-      })
+      // console.log({
+      //   lng: this.lng,
+      //   lat: this.lat
+      // })
       this.$emit('selectPosition', {
         lng: this.lng,
         lat: this.lat

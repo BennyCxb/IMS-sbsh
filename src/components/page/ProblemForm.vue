@@ -358,7 +358,7 @@ export default {
           self.adcdOptions = [].concat(adcdlist)
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$alert(error.message, '温馨提示', {
             confirmButtonText: '确定'
           })
@@ -383,7 +383,7 @@ export default {
           self.edgeOptions = [].concat(list)
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$alert(error.message, '温馨提示', {
             confirmButtonText: '确定'
           })
@@ -408,7 +408,7 @@ export default {
           self.proOptions = [].concat(ptypelist)
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$alert(error.message, '温馨提示', {
             confirmButtonText: '确定'
           })
@@ -463,7 +463,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -521,7 +521,7 @@ export default {
                 }
               })
               .catch(error => {
-                console.log(error)
+                // console.log(error)
                 self.$message.error(error.message)
               })
           } else {
@@ -575,7 +575,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -608,7 +608,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -666,7 +666,7 @@ export default {
       }
     },
     handleRemove (file, fileList) {
-      console.log(file, fileList)
+      // console.log(file, fileList)
     },
     handlePictureCardPreview (file) {
       this.dialogImageUrl = file.url
@@ -700,7 +700,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -711,7 +711,7 @@ export default {
       this.dialogAuditShow = false
     },
     closePro (msg) {
-      console.log(msg)
+      // console.log(msg)
       location.reload()
     },
     getAuditList () {
@@ -735,7 +735,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          // console.log(error)
           self.$message.error(error.message)
         })
     },
@@ -766,7 +766,7 @@ export default {
       let FLevel = Number(localStorage.getItem('FLevel'))
       let blist = JSON.parse(sessionStorage.getItem('breadcrumb'))
       let binx = _.indexOf(blist, '县级自查自纠点位')
-      console.log(1)
+      // console.log(1)
       if (FLevel === 1 || FLevel === 2) {
         if (this.form.FStatus === 1) {
           this.auditPossession = true
