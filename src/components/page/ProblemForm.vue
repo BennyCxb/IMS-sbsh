@@ -187,10 +187,10 @@
     </el-form>
     <div slot="footer" class="dialog-footer" v-cloak>
       <el-button @click="handleClose">关 闭</el-button>
-      <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isEdit && submitPossession && isDisabled">编 辑</el-button>
+      <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isEdit && editPossession && isDisabled">编 辑</el-button>
       <el-button @click="resetForm('probForm')" v-if="!isEdit && !form.FStatus && !isDisabled">重置</el-button>
       <el-button type="primary" @click="submit('probForm')" v-if="!form.FStatus && !isDisabled">保 存</el-button>
-      <el-button type="primary" @click="submitAudit" v-if="isEdit && submitPossession && isDisabled">整改完成</el-button>
+      <el-button type="success" @click="submitAudit" v-if="isEdit && submitPossession && isDisabled">上报问题</el-button>
       <el-button type="primary" @click="openAudit" v-if="isEdit && auditPossession && isDisabled">立即审核</el-button>
       <problem-audit :dialogAudit="dialogAuditShow" :auditData="auditData" @closeAudit="closeAudit" @closePro="closePro"></problem-audit>
     </div>
@@ -235,6 +235,7 @@ export default {
       mapSelectShow: false,
       dialogAuditShow: false,
       filesChange: false,
+      editPossession: false,
       submitPossession: false,
       auditPossession: false,
       form: {
@@ -429,6 +430,7 @@ export default {
           let data = response.data
           if (data.code === 1) {
             let obj = data.object
+            self.title = '问题详情（问题编号：' + obj.FBillNo + '）'
             self.form = {
               isSubmited: false,
               fid: obj.FID,
@@ -453,6 +455,7 @@ export default {
             if (obj.FStatus !== 0) {
               self.isDisabled = true
             }
+            self.getEditPossession()
             self.getSubmitPossession()
             self.getAuditPossession()
           } else {
@@ -741,6 +744,14 @@ export default {
     },
     formatDatetime (row, column, cellValue) {
       return formatDate(new Date(cellValue), 'yyyy-MM-dd hh:mm:ss')
+    },
+    getEditPossession () {
+      let FLevel = Number(localStorage.getItem('FLevel'))
+      if ((FLevel === 1 || FLevel === 3 || FLevel === 4) && this.form.FStatus === 0) {
+        this.editPossession = true
+      } else {
+        this.editPossession = false
+      }
     },
     // 编辑、提交整改权限
     getSubmitPossession () {

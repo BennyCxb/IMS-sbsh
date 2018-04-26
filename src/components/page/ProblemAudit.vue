@@ -23,7 +23,7 @@
     </div>
     <div slot="footer" class="dialog-footer" v-else>
       <el-button type="danger" @click="auditReject">审核不通过</el-button>
-      <el-button type="primary" @click="AuditPass">审核通过</el-button>
+      <el-button type="success" @click="AuditPass">审核通过</el-button>
     </div>
   </el-dialog>
 </template>

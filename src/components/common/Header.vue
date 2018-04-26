@@ -23,12 +23,6 @@ export default {
       name: '未知用户'
     }
   },
-  // computed: {
-  //   username () {
-  //     let username = localStorage.getItem('ms_username')
-  //     return username ? username : this.name
-  //   }
-  // },
   methods: {
     handleCommand (command) {
       let self = this
@@ -36,18 +30,17 @@ export default {
         this.$axios.get('Login/LoginOut')
           .then(function (response) {
             let data = response.data
-            if (data.code === 1) {
-              localStorage.removeItem('ms_username')
-              self.$router.push('/login')
-            } else {
+            if (data.code !== 1)  {
               self.$message.error(data.message)
-              localStorage.removeItem('ms_username')
-              self.$router.push('/login')
             }
+            localStorage.removeItem('ms_username')
+            self.$router.push('/login')
           })
           .catch(function (error) {
             // console.log(error)
             self.$message.error(error.message)
+            localStorage.removeItem('ms_username')
+            self.$router.push('/login')
           })
       }
     },
