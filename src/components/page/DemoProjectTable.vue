@@ -12,12 +12,14 @@
         v-model="select_years"
         align="right"
         type="year"
+        value-format="yyyy"
         placeholder="选择年">
       </el-date-picker>
       <el-date-picker
         class="handle-select"
         v-model="select_mouths"
         format="MM"
+        value-format="MM"
         type="month"
         placeholder="选择月">
       </el-date-picker>

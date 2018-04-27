@@ -348,6 +348,7 @@ export default {
               value: Number(item.FValue),
               label: item.FName
             })
+            self.form.adcd = Number(item.FValue)
           } else {
             _.each(data.object, (obj) => {
               adcdlist.push({
