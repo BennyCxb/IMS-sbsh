@@ -17,11 +17,6 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="项目名称" :label-width="formLabelWidth" prop="FPorjectName">
-            <el-input v-model="form.FPorjectName" placeholder="请输入项目名称"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
           <el-form-item label="行政区划" :label-width="formLabelWidth" prop="FAgencyValue">
             <el-select v-model="form.FAgencyValue">
               <el-option
@@ -34,24 +29,6 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="乡镇街道" :label-width="formLabelWidth" prop="FTwon">
-            <el-input v-model="form.FTwon" placeholder="请输入乡镇街道"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="6">
-          <el-form-item label="里程桩号" :label-width="formLabelWidth" prop="FMileage">
-            <el-input v-model="form.FMileage"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="定位信息" :label-width="formLabelWidth" prop="FGPS">
-            <el-input v-model="form.FGPS" @focus="openMap" prefix-icon="el-icon-location" placeholder="点击选择定位"></el-input>
-          </el-form-item>
-          <mapSelect :mapShow="mapSelectShow" @selectMap="closeMap" @selectPosition="setPosition"></mapSelect>
-        </el-col>
-        <el-col :span="6">
           <el-form-item label="长度" :label-width="formLabelWidth" prop="FLength">
             <el-input v-model="form.FLength">
               <template slot="suffix">km</template>
@@ -59,24 +36,64 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="项目类型" :label-width="formLabelWidth" prop="FProjectTypeID">
-            <el-select v-model="form.FProjectTypeID" placeholder="请选择项目类型">
-              <el-option
-                v-for="(item, i) in proOptions"
-                :key="i"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
+          <el-form-item label="负责单位" :label-width="formLabelWidth" prop="FAccountabilityUnit">
+            <el-input v-model="form.FAccountabilityUnit"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="6">
+          <el-form-item label="项目名称" :label-width="formLabelWidth" prop="FPorjectName">
+            <el-input v-model="form.FPorjectName" placeholder="请输入项目名称"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="乡镇街道" :label-width="formLabelWidth" prop="FTwon">
+            <el-input v-model="form.FTwon" placeholder="请输入乡镇街道"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
           <el-form-item label="投资金额" :label-width="formLabelWidth" prop="FInvestment">
             <el-input v-model="form.FInvestment">
               <template slot="suffix">万元</template>
             </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="联系人" :label-width="formLabelWidth" prop="FLiablePerson">
+            <el-input v-model="form.FLiablePerson"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="项目类型" :label-width="formLabelWidth" prop="FProjectTypeID">
+            <!--<el-select v-model="form.FProjectTypeID" placeholder="请选择项目类型">-->
+              <!--<el-option-->
+                <!--v-for="(item, i) in proOptions"-->
+                <!--:key="i"-->
+                <!--:label="item.label"-->
+                <!--:value="item.value">-->
+              <!--</el-option>-->
+            <!--</el-select>-->
+            <el-select v-model="form.FProjectTypeID" placeholder="请选择项目类型">
+              <el-option-group
+                v-for="group in proOptions"
+                :key="group.label"
+                :label="group.label">
+                <el-option
+                  v-for="item in group.options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-option-group>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="里程桩号" :label-width="formLabelWidth" prop="FMileage">
+            <el-input v-model="form.FMileage"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -87,10 +104,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="用途" :label-width="formLabelWidth" prop="FPurpose">
-            <el-input v-model="form.FPurpose"></el-input>
+          <el-form-item label="联系方式" :label-width="formLabelWidth" prop="FMobile">
+            <el-input v-model="form.FMobile"></el-input>
           </el-form-item>
         </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="6">
           <el-form-item label="计划完工时间" :label-width="formLabelWidth" prop="FPlanDate">
             <el-date-picker
@@ -100,21 +119,21 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="6">
-          <el-form-item label="负责单位" :label-width="formLabelWidth" prop="FAccountabilityUnit">
-            <el-input v-model="form.FAccountabilityUnit"></el-input>
+          <el-form-item label="定位信息" :label-width="formLabelWidth" prop="FGPS">
+            <el-input v-model="form.FGPS" @focus="openMap" prefix-icon="el-icon-location" placeholder="点击选择定位"></el-input>
+          </el-form-item>
+          <mapSelect :mapShow="mapSelectShow" @selectMap="closeMap" @selectPosition="setPosition"></mapSelect>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="用途" :label-width="formLabelWidth" prop="FPurpose">
+            <el-input v-model="form.FPurpose"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="联系人" :label-width="formLabelWidth" prop="FLiablePerson">
-            <el-input v-model="form.FLiablePerson"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="联系方式" :label-width="formLabelWidth" prop="FMobile">
-            <el-input v-model="form.FMobile"></el-input>
+          <el-form-item label="精品示范项目" :label-width="formLabelWidth" prop="FPurpose">
+            <el-radio v-model="form.FIsSpecialProject" label="1">是</el-radio>
+            <el-radio v-model="form.FIsSpecialProject" label="0">否</el-radio>
           </el-form-item>
         </el-col>
       </el-row>
@@ -289,6 +308,7 @@ export default {
         FLiablePerson: '',
         FMobile: '',
         FSynopsis: '',
+        FIsSpecialProject: '0',
         FRemark: ''
       },
       files: [
@@ -464,7 +484,39 @@ export default {
               label: obj.FName
             })
           })
-          self.proOptions = [].concat(ptypelist)
+          self.proOptions = [].concat({
+            label: '精品示范',
+            options: ptypelist
+          })
+          self.getSwsm()
+        })
+        .catch(error => {
+          // console.log(error)
+          self.$alert(error.message, '温馨提示', {
+            confirmButtonText: '确定'
+          })
+        })
+    },
+    getSwsm () {
+      let self = this
+      this.$axios.get('Common/GetEnumList', {
+        params: {
+          EnumType: '三无四美'
+        }
+      })
+        .then(response => {
+          let data = response.data
+          let ptypelist = []
+          _.each(data.object, (obj) => {
+            ptypelist.push({
+              value: obj.FValue,
+              label: obj.FName
+            })
+          })
+          self.proOptions.push({
+            label: '三无四美',
+            options: ptypelist
+          })
         })
         .catch(error => {
           // console.log(error)

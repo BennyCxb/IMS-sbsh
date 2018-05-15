@@ -13,7 +13,8 @@
         align="right"
         type="year"
         value-format="yyyy"
-        placeholder="选择年">
+        placeholder="选择年"
+        size="small">
       </el-date-picker>
       <el-date-picker
         class="handle-select"
@@ -21,9 +22,10 @@
         format="MM"
         value-format="MM"
         type="month"
-        placeholder="选择月">
+        placeholder="选择月"
+        size="small">
       </el-date-picker>
-      <el-select v-model="select_adcd" class="handle-select" placeholder="行政区划" clearable>
+      <el-select v-model="select_adcd" class="handle-select" placeholder="行政区划" clearable size="small">
         <el-option
           v-for="item in adlist"
           :key="item.value"
@@ -33,14 +35,25 @@
           <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
         </el-option>
       </el-select>
-      <el-select v-model="select_project" placeholder="项目类型" class="handle-select mr10" clearable>
-        <el-option v-for="(item, i) in proOptions" :key="i" :label="item.label" :value="item.value"></el-option>
+      <!--<el-select v-model="select_project" placeholder="项目类型" class="handle-select mr10" clearable>-->
+        <!--<el-option v-for="(item, i) in proOptions" :key="i" :label="item.label" :value="item.value"></el-option>-->
+      <!--</el-select>-->
+      <el-select v-model="select_project" placeholder="请选择项目类型" size="small">
+        <el-option-group
+          v-for="group in proOptions"
+          :key="group.label"
+          :label="group.label">
+          <el-option
+            v-for="item in group.options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-option-group>
       </el-select>
-    </div>
-    <div class="handle-box">
-      <el-input v-model="select_biil_num" placeholder="项目编号" class="handle-input mr10"></el-input>
-      <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
-      <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2">新增项目</el-button>
+      <el-input v-model="select_biil_num" placeholder="项目编号" class="handle-input mr10" size="small"></el-input>
+      <el-button type="primary" icon="el-icon-search" @click="search" size="small">搜索</el-button>
+      <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2" size="small">新增项目</el-button>
       <demo-project-form :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow" @closeProAdd="closePro"></demo-project-form>
     </div>
     <el-table v-loading="loading" :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange"
@@ -256,11 +269,43 @@ export default {
               label: obj.FName
             })
           })
-          self.proOptions = [].concat(list)
+          self.proOptions = [].concat({
+            label: '精品示范',
+            options: list
+          })
+          self.getSwsm()
         })
         .catch(error => {
           // console.log(error)
           self.$message.error(error.message)
+        })
+    },
+    getSwsm () {
+      let self = this
+      this.$axios.get('Common/GetEnumList', {
+        params: {
+          EnumType: '三无四美'
+        }
+      })
+        .then(response => {
+          let data = response.data
+          let list = []
+          _.each(data.object, (obj) => {
+            list.push({
+              value: obj.FValue,
+              label: obj.FName
+            })
+          })
+          self.proOptions.push({
+            label: '三无四美',
+            options: list
+          })
+        })
+        .catch(error => {
+          // console.log(error)
+          self.$alert(error.message, '温馨提示', {
+            confirmButtonText: '确定'
+          })
         })
     },
     /**
@@ -385,7 +430,7 @@ export default {
   }
 
   .handle-input {
-    width: 300px;
+    width: 150px;
     display: inline-block;
   }
 </style>

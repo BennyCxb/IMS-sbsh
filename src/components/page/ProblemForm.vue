@@ -29,6 +29,26 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
+          <el-form-item label="问题类型" :label-width="formLabelWidth" prop="proType">
+            <el-select v-model="form.proType" placeholder="请选择问题类型">
+              <el-option
+                v-for="(item, i) in proOptions"
+                :key="i"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="6">
+          <el-form-item label="问题编号" :label-width="formLabelWidth" prop="billNo">
+            <el-input v-model="form.billNo" placeholder="请输入问题编号"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6">
           <el-form-item label="行政区划" :label-width="formLabelWidth" prop="adcd">
             <el-select v-model="form.adcd">
               <el-option
@@ -45,8 +65,6 @@
             <el-input v-model="form.town" placeholder="请输入乡镇街道"></el-input>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="6">
           <el-form-item label="线路名称" :label-width="formLabelWidth" prop="lineName">
             <el-input v-model="form.lineName" placeholder="请输入线路名称"></el-input>
@@ -57,6 +75,8 @@
             <el-input v-model="form.mileage" placeholder="请输入里程"></el-input>
           </el-form-item>
         </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="6">
           <el-form-item label="定位信息" :label-width="formLabelWidth" prop="position">
             <el-input v-model="form.position" @focus="openMap" prefix-icon="el-icon-location" placeholder="点击选择定位">
@@ -64,33 +84,19 @@
           </el-form-item>
           <mapSelect :mapShow="mapSelectShow" @selectMap="closeMap" @selectPosition="setPosition"></mapSelect>
         </el-col>
-        <el-col :span="6">
-          <el-form-item label="问题类型" :label-width="formLabelWidth" prop="proType">
-            <el-select v-model="form.proType" placeholder="请选择问题类型">
-              <el-option
-                v-for="(item, i) in proOptions"
-                :key="i"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
+        <el-col :span="9">
           <el-form-item label="问题描述" :label-width="formLabelWidth" prop="proDescribe">
             <el-input v-model="form.proDescribe"
                       type="textarea"
-                      :rows="2"
+                      :rows="5"
                       placeholder="请输入问题描述"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="9">
           <el-form-item label="备注" :label-width="formLabelWidth" prop="remarks">
             <el-input v-model="form.remarks"
                       type="textarea"
-                      :rows="2"></el-input>
+                      :rows="5"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -296,6 +302,9 @@ export default {
         ],
         position: [
           {required: false}
+        ],
+        billNo: [
+          {required: true, message: '请输入问题编号', trigger: 'blur'}
         ],
         proDescribe: [
           {required: true, message: '请输入问题描述', trigger: 'blur'}
@@ -843,3 +852,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .el-date-editor.el-input, .el-date-editor.el-input__inner {
+    width: 100%;
+  }
+</style>

@@ -13,7 +13,8 @@
         align="right"
         type="year"
         value-format="yyyy"
-        placeholder="选择年">
+        placeholder="选择年"
+        size="small">
       </el-date-picker>
       <el-date-picker
         class="handle-select"
@@ -21,9 +22,10 @@
         format="MM"
         value-format="MM"
         type="month"
-        placeholder="选择月">
+        placeholder="选择月"
+        size="small">
       </el-date-picker>
-      <el-select v-model="select_adcd" class="handle-select" placeholder="行政区划" clearable>
+      <el-select v-model="select_adcd" class="handle-select" placeholder="行政区划" clearable size="small">
         <el-option
           v-for="item in adlist"
           :key="item.value"
@@ -33,23 +35,21 @@
           <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
         </el-option>
       </el-select>
-      <el-select v-model="select_edge" placeholder="四边" class="handle-select mr10" clearable>
+      <el-select v-model="select_edge" placeholder="四边" class="handle-select mr10" clearable size="small">
         <el-option v-for="(item, i) in edgeOptions" :key="i" :label="item.label" :value="item.value"></el-option>
       </el-select>
-      <el-select v-model="select_problem" placeholder="存在问题" class="handle-select mr10" clearable>
+      <el-select v-model="select_problem" placeholder="存在问题" class="handle-select mr10" clearable size="small">
         <el-option v-for="(item, i) in proOptions" :key="i" :label="item.label" :value="item.value"></el-option>
       </el-select>
-      <el-select v-model="select_status" placeholder="审核状态" class="handle-select mr10" clearable>
+      <el-select v-model="select_status" placeholder="审核状态" class="handle-select mr10" clearable size="small">
         <el-option v-for="(item, i) in staOptions" :key="i" :label="item.label" :value="item.value"></el-option>
       </el-select>
       <!--<el-select v-model="select_cttatus" placeholder="整改状态" class="handle-select mr10" clearable>-->
         <!--<el-option v-for="(item, i) in cstaOptions" :key="i" :label="item.label" :value="item.value"></el-option>-->
       <!--</el-select>-->
-    </div>
-    <div class="handle-box">
-      <el-input v-model="select_problem_num" placeholder="问题编号" class="handle-input mr10"></el-input>
-      <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
-      <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2">新增问题</el-button>
+      <el-input v-model="select_problem_num" placeholder="问题编号" class="handle-input mr10" size="small"></el-input>
+      <el-button type="primary" icon="el-icon-search" @click="search" size="small">搜索</el-button>
+      <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2" size="small">新增问题</el-button>
       <vProblemForm :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow" @closeProAdd="closePro"></vProblemForm>
     </div>
     <el-table v-loading="loading" :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange"
@@ -455,7 +455,7 @@ export default {
   }
 
   .handle-input {
-    width: 300px;
+    width: 150px;
     display: inline-block;
   }
 </style>
