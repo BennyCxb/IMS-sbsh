@@ -485,7 +485,7 @@ export default {
             })
           })
           self.proOptions = [].concat({
-            label: '精品示范',
+            label: '四边三化',
             options: ptypelist
           })
           self.getSwsm()

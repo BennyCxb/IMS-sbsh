@@ -55,6 +55,8 @@
     <el-table v-loading="loading" :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange"
               stripe size="mini">
       <!--<el-table-column type="selection" width="55"></el-table-column>-->
+      <el-table-column prop="FYear" label="年度" sortable width="120">
+      </el-table-column>
       <el-table-column prop="FAgencyName" label="行政区划">
       </el-table-column>
       <el-table-column prop="FBillNo" label="问题编号" sortable>
