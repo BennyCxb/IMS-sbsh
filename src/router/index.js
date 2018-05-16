@@ -44,6 +44,10 @@ export default new Router({
         {
           path: '/null:fid-:btid',
           component: resolve => require(['../components/page/notfound.vue'], resolve)
+        },
+        {
+          path: '/401',
+          component: resolve => require(['../components/page/notfound.vue'], resolve)
         }
         // {
         //   path: '/btable:fid-:sid-:tid-:btid',

@@ -12,10 +12,6 @@ import VueLodash from 'vue-lodash'
 import VueCookies from 'vue-cookies'
 // 引入vue-amap
 import VueAMap from 'vue-amap'
-// 引入config.js
-import config from '../dist/config.js'
-// 引入lodash
-// import lodash from 'lodash'
 Vue.use(ElementUI)
 Vue.use(VueCookies)
 Vue.use(VueAMap)
@@ -31,20 +27,28 @@ VueAMap.initAMapApiLoader({
 })
 /* eslint-disable no-new */
 Vue.prototype.$axios = axios
-Vue.prototype.$axios.defaults.baseURL = config.rootHost()
+Vue.prototype.$axios.defaults.baseURL = process.env.API_ROOT
 // 添加请求拦截器
 const self = Vue.prototype
-Vue.prototype.$axios.interceptors.request.use(function (config) {
+Vue.prototype.$axios.interceptors.request.use((config) => {
   // 在发送请求之前做些什么
   if (self.$cookies.get('TZManage')) {
     config.headers.common['Authorization'] = 'Bearer ' + self.$cookies.get('TZManage')
   } else {
     parent.location.href = '#/login'
   }
-
   return config
 }, function (error) {
   // 对请求错误做些什么
+  if (error.response) {
+    switch (error.response.status) {
+      case 401:
+        router.push({path: '/401'})
+        break
+      default:
+        break
+    }
+  }
   return Promise.reject(error)
 })
 new Vue({
