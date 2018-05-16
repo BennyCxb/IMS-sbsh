@@ -25,21 +25,22 @@ export default {
   },
   methods: {
     handleCommand (command) {
-      let self = this
+      // let self = this
       if (command === 'loginout') {
-        this.$axios.get('Login/LoginOut')
-          .then(function (response) {
-            let data = response.data
-            if (data.code !== 1) {
-              self.$message.error(data.message)
-            }
-            self.logOut()
-          })
-          .catch(function (error) {
-            // console.log(error)
-            self.$message.error(error.message)
-            self.logOut()
-          })
+        // this.$axios.get('Login/LoginOut')
+        //   .then(function (response) {
+        //     let data = response.data
+        //     if (data.code !== 1) {
+        //       self.$message.error(data.message)
+        //     }
+        //     self.logOut()
+        //   })
+        //   .catch(function (error) {
+        //     // console.log(error)
+        //     self.$message.error(error.message)
+        //     self.logOut()
+        //   })
+        this.logOut()
       }
     },
     getUsername () {
