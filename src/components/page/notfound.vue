@@ -40,7 +40,7 @@ export default {
     }
   },
   methods: {
-    back() {
+    back () {
       if (this.$route.query.noGoBack) {
         this.$router.push({ path: '/dashboard' })
       } else {

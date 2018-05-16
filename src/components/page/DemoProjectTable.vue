@@ -330,9 +330,13 @@ export default {
       })
         .then(response => {
           let data = response.data
-          self.loading = false
-          self.tableData = data.object
-          self.total = data.page ? data.page.totalRecords : 0
+          if (data.code === 1) {
+            self.loading = false
+            self.tableData = data.object
+            self.total = data.page ? data.page.totalRecords : 0
+          } else {
+            self.$message.error(data.message)
+          }
         })
         .catch(error => {
           // console.log(error)
@@ -369,8 +373,13 @@ export default {
             }
           })
             .then(function (response) {
-              self.$message.error('删除成功！')
-              self.getData()
+              let data = response.data
+              if (data.code === 1) {
+                self.$message.error('删除成功！')
+                self.getData()
+              } else {
+                self.$message.error(data.message)
+              }
             })
             .catch(function (error) {
               // console.log(error)
