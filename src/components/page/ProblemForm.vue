@@ -151,7 +151,7 @@
             <el-dialog :visible.sync="dialogVisible"
                        append-to-body>
               <img width="100%" :src="dialogImageUrl" alt="">
-              <div class="text-center"><a :href="dialogImageUrl" download target="_blank">下载</a></div>
+              <!--<div class="text-center"><a :href="dialogImageUrl" :download="downloadImg + '.jpg'" target="_blank" class="pic-download" title="下载"><i class="el-icon-download"></i></a></div>-->
             </el-dialog>
           </el-form-item>
         </el-col>

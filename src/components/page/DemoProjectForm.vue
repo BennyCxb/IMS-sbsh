@@ -187,6 +187,7 @@
             <el-dialog :visible.sync="dialogVisible"
                        append-to-body>
               <img width="100%" :src="dialogImageUrl" alt="">
+              <!--<div class="text-center"><a :href="dialogImageUrl" download target="_blank" class="pic-download" title="下载"><i class="el-icon-download"></i></a></div>-->
             </el-dialog>
             <hr/>
           </el-form-item>
@@ -243,8 +244,8 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="handleClose">关 闭</el-button>
-      <el-button @click="reload" v-if="!isDisabled">取消编辑</el-button>
-      <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isDisabled">编 辑</el-button>
+      <el-button @click="reload" v-if="isEdit && !isDisabled">取消编辑</el-button>
+      <el-button type="primary" @click="isDisabled = !isDisabled" v-if="isEdit && isDisabled">编 辑</el-button>
       <el-button @click="resetForm('probForm')" v-if="!form.FStatus && !isEdit && !isDisabled">重置</el-button>
       <el-button type="primary" @click="submit('probForm')" v-if="!form.FStatus && !isDisabled">保 存</el-button>
     </div>
