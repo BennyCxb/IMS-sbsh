@@ -110,79 +110,84 @@ export default {
     let self = this
     this.$axios.get('Login/IsLogin')
       .then(function (response) {
-        let data = response.data.object
-        // console.log(data)
-        let items1 = []
-        let items2 = []
-        let items3 = []
-        // 一级菜单
-        _.each(data.MenuJson, (obj1) => {
-          if (obj1.FChild.length > 0) {
-            // 二级菜单
-            _.each(obj1.FChild, (obj2) => {
-              if (obj2.FChild.length > 0) {
-                // 三级菜单
-                _.each(obj2.FChild, (obj3) => {
-                  items3.push({
-                    id: obj3.FID,
-                    billTypeID: obj3.FBillTypeID,
-                    index: obj3.FUrlPath + obj1.FID.toString() + '-' + obj2.FID.toString() + '-' + obj3.FID.toString() + '-' + obj3.FBillTypeID,
-                    parentId: obj3.FParentID,
-                    title: obj3.FName,
-                    url: obj3.FUrlPath,
-                    disabled: obj3.FUrlPath ? false : 'disabled'
+        // let data = response.data.object
+        let data = response.data
+        if (data.code === 1) {
+          // console.log(data)
+          let items1 = []
+          let items2 = []
+          let items3 = []
+          // 一级菜单
+          _.each(data.object.MenuJson, (obj1) => {
+            if (obj1.FChild.length > 0) {
+              // 二级菜单
+              _.each(obj1.FChild, (obj2) => {
+                if (obj2.FChild.length > 0) {
+                  // 三级菜单
+                  _.each(obj2.FChild, (obj3) => {
+                    items3.push({
+                      id: obj3.FID,
+                      billTypeID: obj3.FBillTypeID,
+                      index: obj3.FUrlPath + obj1.FID.toString() + '-' + obj2.FID.toString() + '-' + obj3.FID.toString() + '-' + obj3.FBillTypeID,
+                      parentId: obj3.FParentID,
+                      title: obj3.FName,
+                      url: obj3.FUrlPath,
+                      disabled: obj3.FUrlPath ? false : 'disabled'
+                    })
                   })
-                })
-                items2.push({
-                  id: obj2.FID,
-                  index: obj2.FUrlPath + obj1.FID.toString() + '-' + obj2.FID.toString() + '-' + obj2.FBillTypeID,
-                  parentId: obj2.FParentID,
-                  title: obj2.FName,
-                  subs: items3,
-                  disabled: false
-                })
-              } else {
-                items2.push({
-                  id: obj2.FID,
-                  billTypeID: obj2.FBillTypeID,
-                  index: obj2.FUrlPath + obj1.FID.toString() + '-' + obj2.FID.toString() + '-' + obj2.FBillTypeID,
-                  parentId: obj2.FParentID,
-                  title: obj2.FName,
-                  url: obj2.FUrlPath,
-                  disabled: obj2.FUrlPath ? false : 'disabled'
-                })
-              }
-            })
-            items1.push({
-              id: obj1.FID,
-              icon: 'el-icon-menu',
-              index: obj1.FUrlPath + obj1.FID.toString() + '-' + obj1.FBillTypeID,
-              parentId: obj1.FParentID.toString(),
-              title: obj1.FName,
-              subs: items2,
-              disabled: false
-            })
-          } else {
-            items1.push({
-              id: obj1.FID,
-              billTypeID: obj1.FBillTypeID,
-              icon: 'el-icon-menu',
-              index: obj1.FUrlPath + obj1.FID.toString() + '-' + obj1.FBillTypeID,
-              parentId: obj1.FParentID.toString(),
-              title: obj1.FName,
-              url: obj1.FUrlPath,
-              disabled: obj1.FUrlPath ? false : 'disabled'
-            })
-          }
-        })
+                  items2.push({
+                    id: obj2.FID,
+                    index: obj2.FUrlPath + obj1.FID.toString() + '-' + obj2.FID.toString() + '-' + obj2.FBillTypeID,
+                    parentId: obj2.FParentID,
+                    title: obj2.FName,
+                    subs: items3,
+                    disabled: false
+                  })
+                } else {
+                  items2.push({
+                    id: obj2.FID,
+                    billTypeID: obj2.FBillTypeID,
+                    index: obj2.FUrlPath + obj1.FID.toString() + '-' + obj2.FID.toString() + '-' + obj2.FBillTypeID,
+                    parentId: obj2.FParentID,
+                    title: obj2.FName,
+                    url: obj2.FUrlPath,
+                    disabled: obj2.FUrlPath ? false : 'disabled'
+                  })
+                }
+              })
+              items1.push({
+                id: obj1.FID,
+                icon: 'el-icon-menu',
+                index: obj1.FUrlPath + obj1.FID.toString() + '-' + obj1.FBillTypeID,
+                parentId: obj1.FParentID.toString(),
+                title: obj1.FName,
+                subs: items2,
+                disabled: false
+              })
+            } else {
+              items1.push({
+                id: obj1.FID,
+                billTypeID: obj1.FBillTypeID,
+                icon: 'el-icon-menu',
+                index: obj1.FUrlPath + obj1.FID.toString() + '-' + obj1.FBillTypeID,
+                parentId: obj1.FParentID.toString(),
+                title: obj1.FName,
+                url: obj1.FUrlPath,
+                disabled: obj1.FUrlPath ? false : 'disabled'
+              })
+            }
+          })
 
-        // console.log(items1)
-        self.items = [{
-          icon: 'el-icon-setting',
-          index: 'home',
-          title: '首页',
-          url: 'home'
-        }].concat(items1)
+          // console.log(items1)
+          self.items = [{
+            icon: 'el-icon-setting',
+            index: 'home',
+            title: '首页',
+            url: 'home'
+          }].concat(items1)
+        } else {
+          self.$message.error(data.message)
+        }
       })
       .catch(function (error) {
         // console.log(error)

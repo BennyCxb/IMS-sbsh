@@ -34,10 +34,10 @@ const self = Vue.prototype
 Vue.prototype.$axios.interceptors.request.use(
   config => {
     // 在发送请求之前做些什么
-    if (self.$cookies.get('TZOldManage')) {
-      config.headers.common['Authorization'] = 'Bearer ' + self.$cookies.get('TZOldManage')
+    if (self.$cookies.get('TZManage')) {
+      config.headers.common['Authorization'] = 'Bearer ' + self.$cookies.get('TZManage')
     } else {
-      alert('登录已过期，请重新登录！')
+      // alert('登录已过期，请重新登录！')
     }
 
     return config
