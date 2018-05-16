@@ -12,6 +12,7 @@
             <el-date-picker
               v-model="form.month"
               type="month"
+              value-format="yyyy-MM"
               placeholder="选择年度月份">
             </el-date-picker>
           </el-form-item>
@@ -71,8 +72,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="里程" :label-width="formLabelWidth" prop="mileage">
-            <el-input v-model="form.mileage" placeholder="请输入里程"></el-input>
+          <el-form-item label="里程/村庄" :label-width="formLabelWidth" prop="mileage">
+            <el-input v-model="form.mileage" placeholder="请输入里程/村庄"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -499,8 +500,8 @@ export default {
               FBillNo: self.form.billNo,
               FAgencyValue: self.form.adcd,
               FPerimeter: self.form.edge,
-              FYear: Number(self.form.month.substring(0, 4)),
-              FMonth: Number(self.form.month.substring(5)),
+              FYear: Number(self.form.month.split('-')[0]),
+              FMonth: Number(self.form.month.split('-')[1]),
               FLineName: self.form.lineName,
               FMileage: self.form.mileage,
               FProbTypeID: self.form.proType,

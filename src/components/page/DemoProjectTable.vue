@@ -67,7 +67,7 @@
       </el-table-column>
       <el-table-column prop="FPorjectName" label="项目名称">
       </el-table-column>
-      <el-table-column prop="FMileage" label="里程桩号">
+      <el-table-column prop="FMileage" label="里程/村庄">
       </el-table-column>
       <el-table-column prop="FLength" label="长度">
       </el-table-column>
@@ -434,5 +434,9 @@ export default {
   .handle-input {
     width: 150px;
     display: inline-block;
+  }
+
+  .el-date-editor.el-input, .el-date-editor.el-input__inner {
+    width: 120px;
   }
 </style>

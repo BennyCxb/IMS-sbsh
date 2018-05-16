@@ -12,6 +12,7 @@
             <el-date-picker
               v-model="form.FMonth"
               type="month"
+              value-format="yyyy-MM"
               placeholder="选择年度月份">
             </el-date-picker>
           </el-form-item>
@@ -92,7 +93,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="里程桩号" :label-width="formLabelWidth" prop="FMileage">
+          <el-form-item label="里程/村庄" :label-width="formLabelWidth" prop="FMileage">
             <el-input v-model="form.FMileage"></el-input>
           </el-form-item>
         </el-col>
@@ -115,6 +116,7 @@
             <el-date-picker
               v-model="form.FPlanDate"
               type="date"
+              value-format="yyyy-MM-dd"
               placeholder="请选择日期">
             </el-date-picker>
           </el-form-item>
@@ -132,8 +134,8 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="精品示范项目" :label-width="formLabelWidth" prop="FPurpose">
-            <el-radio v-model="form.FIsSpecialProject" label="1">是</el-radio>
-            <el-radio v-model="form.FIsSpecialProject" label="0">否</el-radio>
+            <el-radio v-model="form.FIsSpecialProject" :label="1">是</el-radio>
+            <el-radio v-model="form.FIsSpecialProject" :label="0">否</el-radio>
           </el-form-item>
         </el-col>
       </el-row>
@@ -142,7 +144,7 @@
           <el-form-item label="项目简介" :label-width="formLabelWidth" prop="FSynopsis">
             <el-input v-model="form.FSynopsis"
                       type="textarea"
-                      :rows="2"
+                      :rows="5"
                       placeholder="请输入项目简介"></el-input>
           </el-form-item>
         </el-col>
@@ -150,7 +152,7 @@
           <el-form-item label="备注" :label-width="formLabelWidth" prop="FRemark">
             <el-input v-model="form.FRemark"
                       type="textarea"
-                      :rows="2"></el-input>
+                      :rows="5"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -200,7 +202,6 @@
                 :headers="headers"
                 :auto-upload="false"
                 :data="item.data"
-                :show-file-list="false"
                 :on-success="uploadSuccess"
                 :on-change="onFilesChange"
                 multiple>
@@ -301,14 +302,14 @@ export default {
         FMileage: '',
         FGPS: this.sposition,
         FProjectTypeID: 1,
-        FPlanDate: formatDate(new Date(), 'yyyy-MM-ss'),
+        FPlanDate: formatDate(new Date(), 'yyyy-MM-dd'),
         FAcreage: '',
         FPurpose: '',
         FAccountabilityUnit: '',
         FLiablePerson: '',
         FMobile: '',
         FSynopsis: '',
-        FIsSpecialProject: '0',
+        FIsSpecialProject: 0,
         FRemark: ''
       },
       files: [
@@ -549,6 +550,7 @@ export default {
               FPorjectName: obj.FPorjectName,
               FTwon: obj.FTwon,
               FInvestment: obj.FInvestment,
+              FIsSpecialProject: obj.FIsSpecialProject,
               FLength: obj.FLength,
               FMileage: obj.FMileage,
               FGPS: obj.FGPS,
@@ -591,13 +593,14 @@ export default {
           if (valid) {
             let data = {
               FBillTypeID: self.form.FBillTypeID,
-              FYear: Number(self.form.FMonth.substring(0, 4)),
-              FMonth: Number(self.form.FMonth.substring(5)),
+              FYear: Number(self.form.FMonth.split('-')[0]),
+              FMonth: Number(self.form.FMonth.split('-')[1]),
               FBillNo: self.form.FBillNo,
               FAgencyValue: self.form.FAgencyValue,
               FPorjectName: self.form.FPorjectName,
               FTwon: self.form.FTwon,
               FInvestment: self.form.FInvestment,
+              FIsSpecialProject: self.form.FIsSpecialProject,
               FLength: self.form.FLength,
               FMileage: self.form.FMileage,
               FGPS: self.form.FGPS,

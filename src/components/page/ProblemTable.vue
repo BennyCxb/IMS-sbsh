@@ -63,7 +63,7 @@
       </el-table-column>
       <el-table-column prop="FLineName" label="线路名称">
       </el-table-column>
-      <el-table-column prop="FMileage" label="里程">
+      <el-table-column prop="FMileage" label="里程/村庄">
       </el-table-column>
       <el-table-column prop="FProbType" label="问题类型">
       </el-table-column>
@@ -459,5 +459,9 @@ export default {
   .handle-input {
     width: 150px;
     display: inline-block;
+  }
+
+  .el-date-editor.el-input, .el-date-editor.el-input__inner {
+    width: 120px;
   }
 </style>
