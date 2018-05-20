@@ -84,7 +84,7 @@
     </el-table>
     <div class="pagination">
       <el-pagination
-        @size-change="search"
+        @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="cur_page"
         :page-sizes="[10, 20, 30, 40, 50]"
@@ -170,6 +170,10 @@ export default {
     this.getChangeStatusData()
   },
   methods: {
+    handleSizeChange (val) {
+      this.pageSize = val
+      this.getData()
+    },
     handleCurrentChange (val) {
       this.cur_page = val
       this.getData()
