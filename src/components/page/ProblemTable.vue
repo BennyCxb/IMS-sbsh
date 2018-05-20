@@ -83,19 +83,13 @@
       </el-table-column>
     </el-table>
     <div class="pagination">
-      <el-select v-model="pageSize" class="handle-select" style="float: left" size="mini"
-                 placeholder="显示行数" @change="search">
-        <el-option
-          v-for="item in rowOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
       <el-pagination
+        @size-change="search"
         @current-change="handleCurrentChange"
-        layout="prev, pager, next"
-        :page-size="pageSize"
+        :current-page="cur_page"
+        :page-sizes="[10, 20, 30, 40, 50]"
+        :page-size="20"
+        layout="total, sizes, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
     </div>
@@ -374,7 +368,7 @@ export default {
      */
     search () {
       this.is_search = true
-      this.getData()
+      this.handleCurrentChange(1)
     },
     formatter (row, column) {
       return row.address
