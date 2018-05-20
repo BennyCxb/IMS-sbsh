@@ -88,7 +88,7 @@
         @current-change="handleCurrentChange"
         :current-page="cur_page"
         :page-sizes="[10, 20, 30, 40, 50]"
-        :page-size="20"
+        :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
@@ -120,7 +120,7 @@ export default {
       billTypeID: '',
       tableData: [],
       cur_page: 1,
-      pageSize: 15,
+      pageSize: 20,
       total: 1,
       multipleSelection: [],
       select_cate: '',
