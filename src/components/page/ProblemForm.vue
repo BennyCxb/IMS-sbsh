@@ -111,6 +111,7 @@
               :auto-upload="false"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
+              :on-remove="handleRemove"
               :data="files1.data"
               :file-list="files1.fileList"
               :beforeUpload="beforeAvatarUpload"
@@ -138,6 +139,7 @@
               :auto-upload="false"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
+              :on-remove="handleRemove"
               :data="files2.data"
               :file-list="files2.fileList"
               :beforeUpload="beforeAvatarUpload"
@@ -610,6 +612,7 @@ export default {
           if (data.code === 1) {
             _.each(data.object, function (obj) {
               files.fileList.push({
+                id: obj.FID,
                 name: obj.FileName,
                 url: obj.FileUrl
               })
@@ -680,7 +683,36 @@ export default {
       }
     },
     handleRemove (file, fileList) {
-      // console.log(file, fileList)
+      this.deleteFiles(file.id)
+    },
+    deleteFiles (id, index, fileList) {
+      let self = this
+      this.$axios.get('Files/DeleteFile', {
+        params: {
+          FID: id
+        }
+      })
+        .then(response => {
+          let data = response.data
+          if (data.code === 1) {
+            if (index) {
+              fileList.splice(index, 1)
+            }
+            self.$message({
+              message: '删除附件成功',
+              type: 'success'
+            })
+          } else {
+            self.$message({
+              message: data.message,
+              type: 'warning'
+            })
+          }
+        })
+        .catch(error => {
+          // console.log(error)
+          self.$message.error(error.message)
+        })
     },
     handlePictureCardPreview (file) {
       this.dialogImageUrl = file.url

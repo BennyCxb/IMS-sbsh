@@ -61,11 +61,9 @@
       <!--<el-table-column type="selection" width="55"></el-table-column>-->
       <el-table-column prop="FYear" label="年度" width="120" sortable>
       </el-table-column>
-      <el-table-column prop="FAgencyName" label="行政区划">
-      </el-table-column>
-      <el-table-column prop="FBillNo" label="项目编号" sortable>
-      </el-table-column>
       <el-table-column prop="FPorjectName" label="项目名称">
+      </el-table-column>
+      <el-table-column prop="FAgencyName" label="行政区划">
       </el-table-column>
       <el-table-column prop="FMileage" label="里程/村庄">
       </el-table-column>

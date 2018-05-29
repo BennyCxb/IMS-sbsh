@@ -174,6 +174,7 @@
               :auto-upload="false"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
+              :on-remove="handleRemove"
               :data="item.data"
               :file-list="item.fileList"
               :beforeUpload="beforeAvatarUpload"
@@ -234,6 +235,9 @@
                 <template slot-scope="scope">
                   <el-button size="small" icon="el-icon-download" title="下载"
                              @click="download(scope.$index, scope.row)">
+                  </el-button>
+                  <el-button size="small" icon="el-icon-delete" type="danger" title="删除" v-if="isEdit && !isDisabled"
+                             @click="deleteFiles(scope.row.id, scope.$index, item.fileList)">
                   </el-button>
                 </template>
               </el-table-column>
@@ -722,6 +726,7 @@ export default {
           if (data.code === 1) {
             _.each(data.object, function (obj) {
               files.fileList.push({
+                id: obj.FID,
                 name: obj.FileName,
                 url: obj.FileUrl
               })
@@ -789,7 +794,36 @@ export default {
       }
     },
     handleRemove (file, fileList) {
-      // console.log(file, fileList)
+      this.deleteFiles(file.id)
+    },
+    deleteFiles (id, index, fileList) {
+      let self = this
+      this.$axios.get('Files/DeleteFile', {
+        params: {
+          FID: id
+        }
+      })
+        .then(response => {
+          let data = response.data
+          if (data.code === 1) {
+            if (index) {
+              fileList.splice(index, 1)
+            }
+            self.$message({
+              message: '删除附件成功',
+              type: 'success'
+            })
+          } else {
+            self.$message({
+              message: data.message,
+              type: 'warning'
+            })
+          }
+        })
+        .catch(error => {
+          // console.log(error)
+          self.$message.error(error.message)
+        })
     },
     handlePictureCardPreview (file) {
       this.dialogImageUrl = file.url

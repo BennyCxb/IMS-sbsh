@@ -115,15 +115,15 @@ export default {
         if (data.code === 1) {
           // console.log(data)
           let items1 = []
-          let items2 = []
-          let items3 = []
           // 一级菜单
           _.each(data.object.MenuJson, (obj1) => {
             if (obj1.FChild.length > 0) {
               // 二级菜单
+              let items2 = []
               _.each(obj1.FChild, (obj2) => {
                 if (obj2.FChild.length > 0) {
                   // 三级菜单
+                  let items3 = []
                   _.each(obj2.FChild, (obj3) => {
                     items3.push({
                       id: obj3.FID,

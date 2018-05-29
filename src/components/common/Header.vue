@@ -10,6 +10,7 @@
                     {{name}}
                 </span>
         <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="cacheClean">清除缓存</el-dropdown-item>
           <el-dropdown-item command="loginout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -25,22 +26,10 @@ export default {
   },
   methods: {
     handleCommand (command) {
-      // let self = this
       if (command === 'loginout') {
-        // this.$axios.get('Login/LoginOut')
-        //   .then(function (response) {
-        //     let data = response.data
-        //     if (data.code !== 1) {
-        //       self.$message.error(data.message)
-        //     }
-        //     self.logOut()
-        //   })
-        //   .catch(function (error) {
-        //     // console.log(error)
-        //     self.$message.error(error.message)
-        //     self.logOut()
-        //   })
         this.logOut()
+      } else if (command === 'cacheClean') {
+        this.cacheClean()
       }
     },
     getUsername () {
@@ -66,6 +55,22 @@ export default {
       this.$cookies.remove('TZManage')
       localStorage.removeItem('ms_username')
       this.$router.push('/login')
+    },
+    cacheClean () {
+      let self = this
+      this.$axios.get('Login/LoginOut')
+        .then(function (response) {
+          let data = response.data
+          if (data.code !== 1) {
+            self.$message.error('清除缓存成功，请重新登录！')
+          }
+          self.logOut()
+        })
+        .catch(function (error) {
+          // console.log(error)
+          self.$message.error(error.message)
+          self.logOut()
+        })
     }
   },
   created () {
