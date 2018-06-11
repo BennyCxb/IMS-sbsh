@@ -856,10 +856,12 @@ export default {
   watch: {
     formShow (curVal) {
       if (curVal === true) {
+        this.form.FBillTypeID = this.billTypeId
         if (this.fid) {
           this.isEdit = true
           this.isDisabled = true
           this.title = '项目详情'
+          this.form.FID = this.fid
           this.getInfo()
         } else {
           this.isEdit = false
