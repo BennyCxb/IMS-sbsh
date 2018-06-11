@@ -51,7 +51,7 @@
           </el-option>
         </el-option-group>
       </el-select>
-      <el-input v-model="select_biil_num" placeholder="项目编号" class="handle-input mr10" size="small"></el-input>
+      <el-input v-model="FPorjectName" placeholder="项目名称" class="handle-input mr10" size="small"></el-input>
       <el-button type="primary" icon="el-icon-search" @click="search" size="small">搜索</el-button>
       <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2" size="small">新增项目</el-button>
       <demo-project-form :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow" @closeProAdd="closePro"></demo-project-form>
@@ -128,7 +128,7 @@ export default {
       select_mouths: '',
       select_adcd: '',
       select_edge: '',
-      select_biil_num: '',
+      FPorjectName: '',
       select_project: '',
       select_cttatus: '',
       del_list: [],
@@ -317,7 +317,7 @@ export default {
         pageSize: this.pageSize,
         FAgencyValue: this.select_adcd,
         FBillTypeID: this.billTypeID,
-        FBillNo: this.select_biil_num,
+        FPorjectName: this.FPorjectName,
         FProjectTypeID: this.select_project,
         FYear: this.select_years,
         FMonth: this.select_mouths,
