@@ -14,7 +14,8 @@
         type="year"
         value-format="yyyy"
         placeholder="选择年"
-        size="small">
+        size="small"
+        clearable>
       </el-date-picker>
       <el-date-picker
         class="handle-select"
@@ -23,9 +24,10 @@
         value-format="MM"
         type="month"
         placeholder="选择月"
-        size="small">
+        size="small"
+        clearable>
       </el-date-picker>
-      <el-select v-model="select_adcd" class="handle-select" placeholder="行政区划" clearable size="small">
+      <el-select v-model="select_adcd" class="handle-select" placeholder="行政区划" clearable size="small" clearable>
         <el-option
           v-for="item in adlist"
           :key="item.value"
@@ -47,7 +49,7 @@
       <!--<el-select v-model="select_cttatus" placeholder="整改状态" class="handle-select mr10" clearable>-->
         <!--<el-option v-for="(item, i) in cstaOptions" :key="i" :label="item.label" :value="item.value"></el-option>-->
       <!--</el-select>-->
-      <el-input v-model="select_problem_num" placeholder="问题编号" class="handle-input mr10" size="small"></el-input>
+      <el-input v-model="select_problem_num" placeholder="问题编号" class="handle-input mr10" size="small" clearable></el-input>
       <el-button type="primary" icon="el-icon-search" @click="search" size="small">搜索</el-button>
       <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2" size="small">新增问题</el-button>
       <vProblemForm :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow" @closeProAdd="closePro"></vProblemForm>

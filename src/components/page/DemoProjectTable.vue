@@ -14,7 +14,8 @@
         type="year"
         value-format="yyyy"
         placeholder="选择年"
-        size="small">
+        size="small"
+        clearable>
       </el-date-picker>
       <el-date-picker
         class="handle-select"
@@ -23,9 +24,10 @@
         value-format="MM"
         type="month"
         placeholder="选择月"
-        size="small">
+        size="small"
+        clearable>
       </el-date-picker>
-      <el-select v-model="select_adcd" class="handle-select" placeholder="行政区划" clearable size="small">
+      <el-select v-model="select_adcd" class="handle-select" placeholder="行政区划" clearable size="small" clearable>
         <el-option
           v-for="item in adlist"
           :key="item.value"
@@ -38,7 +40,7 @@
       <!--<el-select v-model="select_project" placeholder="项目类型" class="handle-select mr10" clearable>-->
         <!--<el-option v-for="(item, i) in proOptions" :key="i" :label="item.label" :value="item.value"></el-option>-->
       <!--</el-select>-->
-      <el-select v-model="select_project" placeholder="请选择项目类型" size="small">
+      <el-select v-model="select_project" placeholder="请选择项目类型" size="small" clearable>
         <el-option-group
           v-for="group in proOptions"
           :key="group.label"
@@ -51,7 +53,7 @@
           </el-option>
         </el-option-group>
       </el-select>
-      <el-input v-model="FPorjectName" placeholder="项目名称" class="handle-input mr10" size="small"></el-input>
+      <el-input v-model="FPorjectName" placeholder="项目名称" class="handle-input mr10" size="small" clearable></el-input>
       <el-button type="primary" icon="el-icon-search" @click="search" size="small">搜索</el-button>
       <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2" size="small">新增项目</el-button>
       <demo-project-form :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow" @closeProAdd="closePro"></demo-project-form>
