@@ -27,7 +27,7 @@
         size="small"
         clearable>
       </el-date-picker>
-      <el-select v-model="select_adcd" class="handle-select" placeholder="行政区划" clearable size="small" clearable>
+      <el-select v-model="select_adcd" class="handle-select" placeholder="行政区划" size="small" clearable>
         <el-option
           v-for="item in adlist"
           :key="item.value"

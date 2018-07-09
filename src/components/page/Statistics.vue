@@ -7,93 +7,46 @@
       </el-breadcrumb>
     </div>
     <div class="handle-box">
-      <el-date-picker
-        class="handle-select"
-        v-model="FYear"
-        align="right"
-        type="year"
-        value-format="yyyy"
-        placeholder="起始年度"
-        :blur="search"
-        size="small">
-      </el-date-picker>
+      <el-select v-model="problem" placeholder="问题点位" class="handle-select mr10" clearable size="small">
+        <el-option v-for="(item, i) in proOptions" :key="i" :label="item.label" :value="item.value"></el-option>
+      </el-select>
+      <el-select v-model="edge" placeholder="四边" class="handle-select mr10" clearable size="small">
+        <el-option v-for="(item, i) in edgeOptions" :key="i" :label="item.label" :value="item.value"></el-option>
+      </el-select>
       <el-button type="primary" icon="el-icon-search" @click="search" size="small">查询</el-button>
       <el-button type="primary" icon="el-icon-download" @click="getExcel" size="small">导出并下载</el-button>
+    </div>
+    <div class="handle-box text-center">
+      <h1>四边三化{{proName}}{{edgeName}}统计表</h1>
     </div>
     <el-table
       :data="tableData"
       v-loading="loading"
       style="width: 100%">
       <el-table-column
-        prop="县（市区）"
+        prop="FAgencyName"
         label="县(市区)"
         align="center"
+        fixed
         header-align="center"
         width="100">
       </el-table-column>
-      <el-table-column
-        prop="三年改造任务数"
-        label="三年改造任务数"
-        align="center"
-        header-align="center"
-        width="120">
-      </el-table-column>
-      <el-table-column :label="Number(FYear) + '年'" header-align="center">
+      <el-table-column label="乱搭乱建" header-align="center" v-for="(item, i) in items" :key="i">
         <el-table-column
-          :prop="'Task' + Number(FYear) + 'Type1'"
-          label="整体(或大部分)拆除退出工业用途"
+          :prop="'FPerimeter' + (i + 1) + 'Count'"
+          label="目标任务(个)"
           align="center"
           header-align="center">
         </el-table-column>
         <el-table-column
-          :prop="'Task' + Number(FYear) + 'Type2'"
-          label="整体(或大部分)拆除重建用于工业"
+          :prop="'FPerimeter' + (i + 1) + 'Finish'"
+          label="已完成(个)"
           align="center"
           header-align="center">
         </el-table-column>
         <el-table-column
-          :prop="'Task' + Number(FYear) + 'Type3'"
-          label="综合整治(含部分拆除)用于产业提升或转型"
-          align="center"
-          header-align="center">
-        </el-table-column>
-      </el-table-column>
-      <el-table-column :label="Number(FYear) + 1 + '年'" header-align="center">
-        <el-table-column
-          :prop="'Task' + (Number(FYear) + 1) + 'Type1'"
-          label="整体(或大部分)拆除退出工业用途"
-          align="center"
-          header-align="center">
-        </el-table-column>
-        <el-table-column
-          :prop="'Task' + (Number(FYear) + 1) + 'Type2'"
-          label="整体(或大部分)拆除重建用于工业"
-          align="center"
-          header-align="center">
-        </el-table-column>
-        <el-table-column
-          :prop="'Task' + (Number(FYear) + 1) + 'Type3'"
-          label="综合整治(含部分拆除)用于产业提升或转型"
-          align="center"
-          header-align="center">
-        </el-table-column>
-      </el-table-column>
-      <el-table-column :label="Number(FYear) + 2 + '年'" header-align="center">
-        <el-table-column
-          :prop="'Task' + (Number(FYear) + 2) + 'Type1'"
-          label="整体(或大部分)拆除退出工业用途"
-          align="center"
-          header-align="center">
-        </el-table-column>
-        <el-table-column
-          :prop="'Task' + (Number(FYear) + 2) + 'Type2'"
-          label="整体(或大部分)拆除重建用于工业"
-          align="center"
-          header-align="center">
-        </el-table-column>
-        <el-table-column
-          :prop="'Task' + (Number(FYear) + 2) + 'Type3'"
-          label="综合整治(含部分拆除)用于产业提升或转型"
+          :prop="'FPerimeter' + (i + 1) + 'Rate'"
+          label="完成比例(%)"
           align="center"
           header-align="center">
         </el-table-column>
@@ -103,13 +56,59 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import { formatDate } from '../../assets/js/date'
 import fileDownload from 'js-file-download'
 export default {
+  computed: {
+    proName () {
+      let name = _.find(this.proOptions, {value: this.problem}).label
+      return name
+    },
+    edgeName () {
+      let self = this
+      let name = ''
+      _.each(this.edgeOptions, function (obj) {
+        if (self.edge === obj.value) {
+          name = obj.label
+        }
+      })
+      return name
+    }
+  },
   data () {
     return {
       breadcrumb: [],
       tableData: [],
+      items: [
+        '乱搭乱建',
+        '乱堆乱放',
+        '废品垃圾',
+        '乱采乱挖',
+        '广告残留',
+        '青山白化',
+        '绿化缺失',
+        '赤膊房',
+        '矿山整治',
+        '农田管理用房'
+      ],
+      edge: 1,
+      problem: 1000011,
+      edgeOptions: [],
+      proOptions: [
+        {
+          label: '省级问题点位',
+          value: 1000011
+        },
+        {
+          label: '市级问题点位',
+          value: 1000012
+        },
+        {
+          label: '县级自查自纠点位',
+          value: 1000013
+        }
+      ],
       loading: true,
       FYear: formatDate(new Date(), 'yyyy')
     }
@@ -122,19 +121,53 @@ export default {
       let blist = JSON.parse(sessionStorage.getItem('breadcrumb'))
       this.breadcrumb = [].concat(blist)
     },
+    /**
+     * 获取四边
+     */
+    getEdge () {
+      let self = this
+      this.$axios.get('Common/GetEnumList', {
+        params: {
+          EnumType: '四边'
+        }
+      })
+        .then(function (response) {
+          let data = response.data
+          let list = []
+          _.each(data.object, (obj) => {
+            list.push({
+              value: Number(obj.FValue),
+              label: obj.FName
+            })
+          })
+          self.edgeOptions = [].concat(list)
+        })
+        .catch(function (error) {
+          // console.log(error)
+          self.$message.error(error.message)
+        })
+    },
     getList () {
       let self = this
-      if (!this.FYear) {
+      if (!this.problem) {
         self.$message({
-          message: '请选择起始年份',
+          message: '请选择问题点位',
+          type: 'warning'
+        })
+        return false
+      }
+      if (!this.edge) {
+        self.$message({
+          message: '请选择四边',
           type: 'warning'
         })
         return false
       }
       this.loading = true
-      this.$axios.get('Statistical/GetOldCityChangeSchDataByAgency', {
+      this.$axios.get('Statistical/GetPerimeterTable', {
         params: {
-          FYear: this.FYear
+          FBillTypeID: this.problem,
+          FPerimeter: this.edge
         }
       })
         .then(function (response) {
@@ -147,8 +180,9 @@ export default {
           }
         })
         .catch(function (error) {
+          self.loading = false
           console.log(error)
-          self.$alert(error.message, '温馨提示', {
+          self.$alert('获取数据失败', '温馨提示', {
             confirmButtonText: '确定'
           })
         })
@@ -161,16 +195,15 @@ export default {
     },
     getExcel () {
       let self = this
-      this.$axios.get('Statistical/GetOldCityChangeSchExcelByAgency', {
+      this.$axios.get('Statistical/GetFPerimetersExcel', {
         params: {
-          FYear: this.FYear
+          FBillTypeID: this.problem,
+          FPerimeter: this.edge
         },
         responseType: 'blob'
       })
         .then(function (response) {
-          // self.download(response.data)
-          // let fileName = response.headers['content-disposition'].match(/fushun(\S*)xls/)[0]
-          let fileName = '老旧工业区块' + Number(self.FYear) + '-' + (Number(self.FYear) + 2) + '三年改造任务表.xls'
+          let fileName = '四边三化' + self.proName + self.edgeName + '统计表.xls'
           fileDownload(response.data, fileName)
         })
         .catch(function (error) {
@@ -195,6 +228,7 @@ export default {
     }
   },
   created () {
+    this.getEdge()
     this.getList()
     this.getBreadcrumb()
   }
