@@ -31,7 +31,7 @@
         header-align="center"
         width="100">
       </el-table-column>
-      <el-table-column label="乱搭乱建" header-align="center" v-for="(item, i) in items" :key="i">
+      <el-table-column :label="item" header-align="center" v-for="(item, i) in items" :key="i">
         <el-table-column
           :prop="'FPerimeter' + (i + 1) + 'Count'"
           label="目标任务(个)"
