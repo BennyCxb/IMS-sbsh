@@ -51,6 +51,26 @@
           header-align="center">
         </el-table-column>
       </el-table-column>
+      <el-table-column label="总计" header-align="center">
+        <el-table-column
+          prop="FAllCount"
+          label="目标任务(个)"
+          align="center"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          prop="FAllFinish"
+          label="已完成(个)"
+          align="center"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          prop="FAllRate"
+          label="完成比例(%)"
+          align="center"
+          header-align="center">
+        </el-table-column>
+      </el-table-column>
     </el-table>
   </div>
 </template>
