@@ -51,12 +51,19 @@
       <!--</el-select>-->
       <el-input v-model="select_problem_num" placeholder="问题编号" class="handle-input mr10" size="small" clearable></el-input>
       <el-button type="primary" icon="el-icon-search" @click="search" size="small">搜索</el-button>
+      <!--<el-button type="success" icon="el-icon-success" @click="AuditPass" size="small">审核通过</el-button>-->
+      <!--<el-button type="danger" icon="el-icon-error" @click="search" size="small">审核不通过</el-button>-->
       <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2" size="small">新增问题</el-button>
       <vProblemForm :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow" @closeProAdd="closePro"></vProblemForm>
     </div>
-    <el-table v-loading="loading" :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange"
+    <el-table v-loading="loading"
+              :data="data"
+              border
+              style="width: 100%"
+              ref="multipleTable"
+              @selection-change="handleSelectionChange"
               stripe size="mini">
-      <!--<el-table-column type="selection" width="55"></el-table-column>-->
+      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="FYear" label="年度" sortable width="120">
       </el-table-column>
       <el-table-column prop="FAgencyName" label="行政区划">
@@ -420,6 +427,7 @@ export default {
     },
     handleSelectionChange (val) {
       this.multipleSelection = val
+      console.log(val)
     },
     /**
      * 新增问题点位
@@ -438,9 +446,37 @@ export default {
     /**
      * 关闭问题信息框
      */
-    closePro: function (msg) {
+    closePro (msg) {
       this.proAddShow = msg
       this.getData()
+    },
+    /**
+     * 批量审核通过
+     */
+    AuditPass () {
+      let self = this
+      let pass = item => {
+        this.$axios.post('Flow/AdoptApply', {
+          FBillTypeID: self.billTypeID,
+          FID: item.FID,
+          FCurrentLevel: self.FLevel,
+          FlowMessage: ''
+        })
+          .catch(error => {
+            // console.log(error)
+            self.$message.error(error.message)
+          })
+      }
+      _.each(this.multipleSelection, item => {
+        pass(item)
+      })
+      // this.$axios.all(pass)
+      //   .then(() => {
+      //     self.$message({
+      //       message: '审核通过',
+      //       type: 'success'
+      //     })
+      //   })
     }
   },
   watch: {

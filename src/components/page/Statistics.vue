@@ -7,10 +7,10 @@
       </el-breadcrumb>
     </div>
     <div class="handle-box">
-      <el-select v-model="problem" placeholder="问题点位" class="handle-select mr10" clearable size="small">
+      <el-select v-model="problem" placeholder="问题点位" class="handle-select mr10" size="small">
         <el-option v-for="(item, i) in proOptions" :key="i" :label="item.label" :value="item.value"></el-option>
       </el-select>
-      <el-select v-model="edge" placeholder="四边" class="handle-select mr10" clearable size="small">
+      <el-select v-model="edge" placeholder="四边" class="handle-select mr10" size="small">
         <el-option v-for="(item, i) in edgeOptions" :key="i" :label="item.label" :value="item.value"></el-option>
       </el-select>
       <el-button type="primary" icon="el-icon-search" @click="search" size="small">查询</el-button>
@@ -112,7 +112,7 @@ export default {
         '矿山整治',
         '农田管理用房'
       ],
-      edge: 1,
+      edge: 0,
       problem: 1000011,
       edgeOptions: [],
       proOptions: [
@@ -153,7 +153,10 @@ export default {
       })
         .then(function (response) {
           let data = response.data
-          let list = []
+          let list = [{
+            value: 0,
+            label: '所有'
+          }]
           _.each(data.object, (obj) => {
             list.push({
               value: Number(obj.FValue),
@@ -176,13 +179,13 @@ export default {
         })
         return false
       }
-      if (!this.edge) {
-        self.$message({
-          message: '请选择四边',
-          type: 'warning'
-        })
-        return false
-      }
+      // if (!this.edge) {
+      //   self.$message({
+      //     message: '请选择四边',
+      //     type: 'warning'
+      //   })
+      //   return false
+      // }
       this.loading = true
       this.$axios.get('Statistical/GetPerimeterTable', {
         params: {
