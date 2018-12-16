@@ -484,6 +484,7 @@ export default {
               let index = _.indexOf(self.data, item)
               self.data[index].FStatus = 1
               self.data[index].FStatusName = '待审核'
+              self.handleSelectionChange(self.multipleSelection)
             }
           })
           .catch(error => {
@@ -510,6 +511,7 @@ export default {
               let index = _.indexOf(self.data, item)
               self.data[index].FStatus = 2
               self.data[index].FStatusName = '审核完成'
+              self.handleSelectionChange(self.multipleSelection)
             }
           })
           .catch(error => {
@@ -537,6 +539,7 @@ export default {
               let index = _.indexOf(self.data, item)
               self.data[index].FStatus = 0
               self.data[index].FStatusName = '待整改'
+              self.handleSelectionChange(self.multipleSelection)
             }
           })
           .catch(error => {
