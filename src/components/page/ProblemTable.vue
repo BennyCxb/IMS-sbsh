@@ -51,8 +51,9 @@
       <!--</el-select>-->
       <el-input v-model="select_problem_num" placeholder="问题编号" class="handle-input mr10" size="small" clearable></el-input>
       <el-button type="primary" icon="el-icon-search" @click="search" size="small">搜索</el-button>
-      <!--<el-button type="success" icon="el-icon-success" @click="AuditPass" size="small">审核通过</el-button>-->
-      <!--<el-button type="danger" icon="el-icon-error" @click="search" size="small">审核不通过</el-button>-->
+      <el-button type="primary" icon="el-icon-upload2" :disabled="disabled0" @click="batchSubmit" size="small">批量提交审核</el-button>
+      <el-button type="success" icon="el-icon-success" :disabled="disabled1" @click="batchAuditPass" size="small">批量审核通过</el-button>
+      <el-button type="danger" icon="el-icon-error" :disabled="disabled1" @click="batchAuditReject" size="small">批量审核不通过</el-button>
       <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2" size="small">新增问题</el-button>
       <vProblemForm :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow" @closeProAdd="closePro"></vProblemForm>
     </div>
@@ -151,6 +152,8 @@ export default {
       proAddShow: false,
       breadcrumb: [],
       loading: true,
+      disabled0: true,
+      disabled1: true,
       rowOptions: [
         {
           label: '每页10行',
@@ -427,7 +430,21 @@ export default {
     },
     handleSelectionChange (val) {
       this.multipleSelection = val
-      console.log(val)
+      let total = val.length
+      if (total) {
+        let count = _.countBy(val, 'FStatus')
+        if (count[0] === total) {
+          this.disabled0 = false
+        } else if (count[1] === total) {
+          this.disabled1 = false
+        } else {
+          this.disabled0 = true
+          this.disabled1 = true
+        }
+      } else {
+        this.disabled0 = true
+        this.disabled1 = true
+      }
     },
     /**
      * 新增问题点位
@@ -451,32 +468,81 @@ export default {
       this.getData()
     },
     /**
+     * 批量提交审核
+     */
+    batchSubmit () {
+      let self = this
+      let selection = this.$refs.multipleTable.selection
+      _.each(selection, function (item) {
+        self.$axios.post('Flow/SubmitApply', {
+          FBillTypeID: self.billTypeID,
+          FID: item.FID
+        })
+          .then(response => {
+            let data = response.data
+            if (data.code === 1) {
+              let index = _.indexOf(self.data, item)
+              self.data[index].FStatus = 1
+              self.data[index].FStatusName = '待审核'
+            }
+          })
+          .catch(error => {
+            self.$message.error(error.message)
+          })
+      })
+    },
+    /**
      * 批量审核通过
      */
-    AuditPass () {
+    batchAuditPass () {
       let self = this
-      let pass = item => {
+      _.each(this.multipleSelection, item => {
         this.$axios.post('Flow/AdoptApply', {
           FBillTypeID: self.billTypeID,
           FID: item.FID,
-          FCurrentLevel: self.FLevel,
+          FCurrentLevel: item.FCheckLevel,
           FlowMessage: ''
         })
+          .then(response => {
+            let data = response.data
+            console.log(data)
+            if (data.code === 1) {
+              let index = _.indexOf(self.data, item)
+              self.data[index].FStatus = 2
+              self.data[index].FStatusName = '审核完成'
+            }
+          })
           .catch(error => {
             // console.log(error)
             self.$message.error(error.message)
           })
-      }
-      _.each(this.multipleSelection, item => {
-        pass(item)
       })
-      // this.$axios.all(pass)
-      //   .then(() => {
-      //     self.$message({
-      //       message: '审核通过',
-      //       type: 'success'
-      //     })
-      //   })
+    },
+    /**
+     * 批量审核不通过
+     */
+    batchAuditReject () {
+      let self = this
+      _.each(this.multipleSelection, item => {
+        this.$axios.post('Flow/RejectApply', {
+          FBillTypeID: self.billTypeID,
+          FID: item.FID,
+          FCurrentLevel: item.FCheckLevel,
+          FlowMessage: ''
+        })
+          .then(response => {
+            let data = response.data
+            console.log(data)
+            if (data.code === 1) {
+              let index = _.indexOf(self.data, item)
+              self.data[index].FStatus = 0
+              self.data[index].FStatusName = '待整改'
+            }
+          })
+          .catch(error => {
+            self.$message.error(error.message)
+          })
+      })
     }
   },
   watch: {
