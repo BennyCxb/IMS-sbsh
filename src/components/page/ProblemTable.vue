@@ -51,9 +51,9 @@
       <!--</el-select>-->
       <el-input v-model="select_problem_num" placeholder="问题编号" class="handle-input mr10" size="small" clearable></el-input>
       <el-button type="primary" icon="el-icon-search" @click="search" size="small">搜索</el-button>
-      <el-button type="primary" icon="el-icon-upload2" :disabled="disabled0" @click="batchSubmit" size="small">批量提交审核</el-button>
-      <el-button type="success" icon="el-icon-success" :disabled="disabled1" @click="batchAuditPass" size="small">批量审核通过</el-button>
-      <el-button type="danger" icon="el-icon-error" :disabled="disabled1" @click="batchAuditReject" size="small">批量审核不通过</el-button>
+      <el-button type="primary" icon="el-icon-upload2" :disabled="disabled0" v-if="submitPossession" @click="batchSubmit" size="small">批量提交审核</el-button>
+      <el-button type="success" icon="el-icon-success" :disabled="disabled1" v-if="auditPossession" @click="batchAuditPass" size="small">批量审核通过</el-button>
+      <el-button type="danger" icon="el-icon-error" :disabled="disabled1" v-if="auditPossession" @click="batchAuditReject" size="small">批量审核不通过</el-button>
       <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2" size="small">新增问题</el-button>
       <vProblemForm :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow" @closeProAdd="closePro"></vProblemForm>
     </div>
@@ -154,6 +154,8 @@ export default {
       loading: true,
       disabled0: true,
       disabled1: true,
+      submitPossession: false,
+      auditPossession: false,
       rowOptions: [
         {
           label: '每页10行',
@@ -180,6 +182,8 @@ export default {
     this.getProblemType()
     this.getStatusData()
     this.getChangeStatusData()
+    this.getSubmitPossession()
+    this.getAuditPossession()
   },
   methods: {
     handleSizeChange (val) {
@@ -546,6 +550,34 @@ export default {
             self.$message.error(error.message)
           })
       })
+    },
+    // 编辑、提交整改权限
+    getSubmitPossession () {
+      let FLevel = Number(localStorage.getItem('FLevel'))
+      let blist = JSON.parse(sessionStorage.getItem('breadcrumb'))
+      let binx = _.indexOf(blist, '县级自查自纠点位')
+      if (FLevel === 1) {
+        this.submitPossession = true
+      } else if (FLevel === 3 && binx === -1) {
+        this.submitPossession = true
+      } else if (FLevel === 4 && binx > -1) {
+        this.submitPossession = true
+      } else {
+        this.submitPossession = false
+      }
+    },
+    // 审核整改权限
+    getAuditPossession () {
+      let FLevel = Number(localStorage.getItem('FLevel'))
+      let blist = JSON.parse(sessionStorage.getItem('breadcrumb'))
+      let binx = _.indexOf(blist, '县级自查自纠点位')
+      if ((FLevel === 1 || FLevel === 2) && binx === -1) {
+        this.auditPossession = true
+      } else if (FLevel === 3 && binx > -1) {
+        this.auditPossession = true
+      } else {
+        this.auditPossession = false
+      }
     }
   },
   watch: {
