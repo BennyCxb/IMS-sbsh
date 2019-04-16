@@ -432,6 +432,7 @@ export default {
 <style scoped>
   .handle-box {
     margin-bottom: 20px;
+    line-height: 40px;
   }
 
   .handle-select {

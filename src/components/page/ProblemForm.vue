@@ -881,6 +881,9 @@ export default {
     },
     billTypeId (curVal) {
       this.form.billTypeId = curVal
+    },
+    'form.billNo' (val) {
+      this.form.billNo = val.toUpperCase()
     }
   }
 }
