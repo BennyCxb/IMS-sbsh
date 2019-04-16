@@ -19,6 +19,7 @@
     "js-file-download": "^0.4.1",
     "less": "^3.8.1",
     "lodash": "^4.17.5",
+    "moment": "^2.24.0",
     "vue": "^2.5.2",
     "vue-amap": "^0.5.4",
     "vue-cookies": "^1.5.6",

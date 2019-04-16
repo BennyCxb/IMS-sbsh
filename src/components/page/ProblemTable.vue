@@ -51,9 +51,9 @@
       <!--</el-select>-->
       <el-input v-model="select_problem_num" placeholder="问题编号" class="handle-input mr10" size="small" clearable></el-input>
       <el-button type="primary" icon="el-icon-search" @click="search" size="small">搜索</el-button>
-      <el-button type="primary" icon="el-icon-upload2" :disabled="disabled0" v-if="submitPossession" @click="batchSubmit" size="small">批量提交审核</el-button>
-      <el-button type="success" icon="el-icon-success" :disabled="disabled1" v-if="auditPossession" @click="batchAuditPass" size="small">批量审核通过</el-button>
-      <el-button type="danger" icon="el-icon-error" :disabled="disabled1" v-if="auditPossession" @click="batchAuditReject" size="small">批量审核不通过</el-button>
+      <el-button type="primary" icon="el-icon-upload2" :disabled="disabled0" v-if="submitPossession" @click="batchSubmit" :loading="submitLoading" size="small">批量提交审核</el-button>
+      <el-button type="success" icon="el-icon-success" :disabled="disabled1" v-if="auditPossession" @click="batchAuditPass" :loading="passLoading" size="small">批量审核通过</el-button>
+      <el-button type="danger" icon="el-icon-error" :disabled="disabled1" v-if="auditPossession" @click="batchAuditReject" :loading="rejectLoading" size="small">批量审核不通过</el-button>
       <el-button type="primary" icon="el-icon-plus" @click="addProblem" v-if="FLevel !== 2" size="small">新增问题</el-button>
       <vProblemForm :fid="editFid" :billTypeId="billTypeID" :formShow="proAddShow" @closeProAdd="closePro"></vProblemForm>
     </div>
@@ -156,6 +156,9 @@ export default {
       disabled1: true,
       submitPossession: false,
       auditPossession: false,
+      submitLoading: false,
+      passLoading: false,
+      rejectLoading: false,
       rowOptions: [
         {
           label: '每页10行',
@@ -173,6 +176,7 @@ export default {
     }
   },
   created () {
+    this.select_years = this.$moment().format('YYYY')
     this.getBillTypeId()
     this.getBreadcrumb()
 
@@ -475,80 +479,69 @@ export default {
      * 批量提交审核
      */
     batchSubmit () {
-      let self = this
-      let selection = this.$refs.multipleTable.selection
-      _.each(selection, function (item) {
-        self.$axios.post('Flow/SubmitApply', {
-          FBillTypeID: self.billTypeID,
-          FID: item.FID
-        })
-          .then(response => {
-            let data = response.data
-            if (data.code === 1) {
-              let index = _.indexOf(self.data, item)
-              self.data[index].FStatus = 1
-              self.data[index].FStatusName = '待审核'
-              self.handleSelectionChange(self.multipleSelection)
-            }
-          })
-          .catch(error => {
-            self.$message.error(error.message)
-          })
+      let list = []
+      this.submitLoading = true
+      _.each(this.multipleSelection, item => {
+        list.push(this.auditSubmit(item))
       })
+      this.$axios.all(list)
+        .then(response => {
+          this.submitLoading = false
+          this.getData()
+        })
     },
     /**
      * 批量审核通过
      */
     batchAuditPass () {
-      let self = this
+      let list = []
+      this.passLoading = true
       _.each(this.multipleSelection, item => {
-        this.$axios.post('Flow/AdoptApply', {
-          FBillTypeID: self.billTypeID,
-          FID: item.FID,
-          FCurrentLevel: item.FCheckLevel,
-          FlowMessage: ''
-        })
-          .then(response => {
-            let data = response.data
-            console.log(data)
-            if (data.code === 1) {
-              let index = _.indexOf(self.data, item)
-              self.data[index].FStatus = 2
-              self.data[index].FStatusName = '审核完成'
-              self.handleSelectionChange(self.multipleSelection)
-            }
-          })
-          .catch(error => {
-            // console.log(error)
-            self.$message.error(error.message)
-          })
+        list.push(this.auditPass(item))
       })
+      this.$axios.all(list)
+        .then(response => {
+          this.passLoading = false
+          this.getData()
+        })
     },
     /**
      * 批量审核不通过
      */
     batchAuditReject () {
-      let self = this
+      let list = []
+      this.rejectLoading = true
       _.each(this.multipleSelection, item => {
-        this.$axios.post('Flow/RejectApply', {
-          FBillTypeID: self.billTypeID,
-          FID: item.FID,
-          FCurrentLevel: item.FCheckLevel,
-          FlowMessage: ''
+        list.push(this.auditReject(item))
+      })
+      this.$axios.all(list)
+        .then(response => {
+          this.rejectLoading = false
+          this.getData()
         })
-          .then(response => {
-            let data = response.data
-            console.log(data)
-            if (data.code === 1) {
-              let index = _.indexOf(self.data, item)
-              self.data[index].FStatus = 0
-              self.data[index].FStatusName = '待整改'
-              self.handleSelectionChange(self.multipleSelection)
-            }
-          })
-          .catch(error => {
-            self.$message.error(error.message)
-          })
+    },
+    auditSubmit (obj) {
+      return this.$axios.post('Flow/SubmitApply', {
+        FBillTypeID: this.billTypeID,
+        FID: obj.FID,
+        FCurrentLevel: obj.FCheckLevel,
+        FlowMessage: ''
+      })
+    },
+    auditPass (obj) {
+      return this.$axios.post('Flow/AdoptApply', {
+        FBillTypeID: this.billTypeID,
+        FID: obj.FID,
+        FCurrentLevel: obj.FCheckLevel,
+        FlowMessage: ''
+      })
+    },
+    auditReject (obj) {
+      return this.$axios.post('Flow/RejectApply', {
+        FBillTypeID: this.billTypeID,
+        FID: obj.FID,
+        FCurrentLevel: obj.FCheckLevel,
+        FlowMessage: ''
       })
     },
     // 编辑、提交整改权限
